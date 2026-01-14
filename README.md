@@ -1,2 +1,3 @@
-# jistpy
-Ji(ra)St(ructure)Py(thon) library
+# JI(ra)ST(ructure)py
+
+Client for accessing JIRA Structure REST API from python.
