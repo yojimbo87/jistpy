@@ -8,5 +8,4 @@ jist = JIST(secret.hostname, secret.username, secret.password)
 structures = jist.get_structures()
 
 pprint(structures)
-
 print(len(structures))
