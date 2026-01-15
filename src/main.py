@@ -1,22 +1,12 @@
 from jist import JIST
-import os
-from configparser import ConfigParser
+from utils import Secret
+from pprint import pprint
 
-thisfolder = os.path.dirname(os.path.abspath(__file__))
-initfile = os.path.join(thisfolder, 'secret.ini')
-config = ConfigParser()
-config.read(initfile)
+secret = Secret("secret.ini", "Credentials2")
 
-section = "Credentials2"
-
-hostname = config[section]["hostname"]
-username = config[section]["username"]
-password = config[section]["password"]
-
-jist = JIST(hostname, username, password)
-
+jist = JIST(secret.hostname, secret.username, secret.password)
 structures = jist.get_structures()
 
-print(structures)
-#pretty_json = json.loads(res.text)
-#print (json.dumps(pretty_json, indent=2))
+pprint(structures)
+
+print(len(structures))
