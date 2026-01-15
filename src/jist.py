@@ -1,5 +1,5 @@
 import http_service as http
-import structure_resource
+import rest_resources as rest_resources
 from structure_spec import Structure
 
 class JIST:
@@ -7,6 +7,6 @@ class JIST:
         http.init(host, username, password)
 
     def get_structures(self) -> list[Structure]:
-        res = structure_resource.get_structures()
+        res = rest_resources.get_structures()
 
         return res

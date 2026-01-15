@@ -1,0 +1,1 @@
+from .structure_resource import get_structures
