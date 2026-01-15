@@ -1,1 +1,1 @@
-from .structure_resource import get_structures
+from .structure_resource import get_structures, get_structure

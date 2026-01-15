@@ -7,6 +7,11 @@ class JIST:
         http.init(host, username, password)
 
     def get_structures(self) -> list[Structure]:
-        res = rest_resources.get_structures()
+        response = rest_resources.get_structures()
 
-        return res
+        return response
+    
+    def get_structure(self, structure_id: int) -> Structure:
+        response = rest_resources.get_structure(structure_id)
+
+        return response

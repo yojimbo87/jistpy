@@ -5,7 +5,7 @@ from pprint import pprint
 secret = Secret("secret.ini", "Credentials2")
 
 jist = JIST(secret.hostname, secret.username, secret.password)
-structures = jist.get_structures()
+#data = jist.get_structures()
+data = jist.get_structure(600)
 
-pprint(structures)
-print(len(structures))
+pprint(data)
