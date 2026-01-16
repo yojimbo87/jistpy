@@ -1,4 +1,4 @@
-import http_service as http
+import utils.http_service as http
 import rest_resources as rest_resources
 from specs import Structure, Forest
 

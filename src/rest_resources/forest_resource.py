@@ -1,6 +1,6 @@
 from pydantic import TypeAdapter
 from specs.forest_spec import ForestSpec, ForestComponent, Forest
-import http_service as http
+from utils import http_service as http
 
 def get_forest(structure_id: int) -> Forest:
     forest_spec = ForestSpec(structure_id=structure_id)

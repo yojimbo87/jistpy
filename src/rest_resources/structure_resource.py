@@ -1,6 +1,6 @@
 from pydantic import TypeAdapter
 from specs.structure_spec import Structure
-import http_service as http
+from utils import http_service as http
 
 def get_structures() -> list[Structure]:
     response = http.get("rest/structure/2.0/structure")
