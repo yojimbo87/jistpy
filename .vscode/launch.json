@@ -8,7 +8,7 @@
             "name": "Python Debugger: Current File",
             "type": "debugpy",
             "request": "launch",
-            "program": "./src/tests/console/main.py",
+            "program": "./src/tests/nicegui/main.py",
             "console": "integratedTerminal"
         }
     ]
