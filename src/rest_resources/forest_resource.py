@@ -14,4 +14,3 @@ def get_forest(structure_id: int) -> Forest:
     validated_data.components = forest_parser.parse_formula(validated_data.formula)
 
     return validated_data
-
