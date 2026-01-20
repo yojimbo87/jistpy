@@ -19,7 +19,7 @@ class ForestComponent(BaseModel):
     item_id: str
     issue_id: int
 
-class Forest(BaseModel):
+class ForestResponse(BaseModel):
     spec: ForestSpec
     formula: str
     components: list[ForestComponent] = Field(default=None)

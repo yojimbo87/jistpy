@@ -3,7 +3,7 @@ import rest_resources as rest_resources
 from specs import (
     StructureResponse, 
     ForestSpec, 
-    Forest, 
+    ForestResponse, 
     AttributeDefinition, 
     ValueRequestItem, 
     ValueRequest, 
@@ -24,7 +24,7 @@ class JIST:
 
         return response
     
-    def get_forest(self, structure_id: int) -> Forest:
+    def get_forest(self, structure_id: int) -> ForestResponse:
         response = rest_resources.get_forest(structure_id)
 
         return response

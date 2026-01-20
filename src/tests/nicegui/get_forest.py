@@ -14,7 +14,7 @@ jist = JIST(secret.hostname, secret.username, secret.password)
 
 # Retrieve forest data
 data = jist.get_forest(600)
-
+'''
 # Setup table columns based on forest specification
 columns = [
     {'name': 'raw_component', 'label': 'Raw component', 'field': 'raw_component', 'align': 'left'},
@@ -34,5 +34,12 @@ rows: list[dict] = ta.dump_python(data.components)
 ui.table(columns=columns, rows=rows, row_key='row_id')
 # Print count of forest items
 ui.label(f"Items count: {len(rows)}")
+'''
 
+# Retrieve forest data
+data = jist.get_forest(600)
+pretty_json = data.model_dump_json(indent=2)
+
+# Setup web interface
+ui.code(pretty_json)
 ui.run()
