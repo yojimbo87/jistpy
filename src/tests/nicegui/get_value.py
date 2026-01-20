@@ -2,7 +2,6 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent))
 
-from pydantic import TypeAdapter
 from nicegui import ui
 from utils import Secret
 from jist import JIST
@@ -25,8 +24,5 @@ data = jist.get_value(
     ]
 )
 
-ui.json_editor({'content': {'json': data.model_dump()}})
-
 ui.code(data.model_dump_json(indent=2))
-
 ui.run()

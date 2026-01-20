@@ -15,7 +15,7 @@ class Permission(BaseModel):
     message: str = Field(default=None)
     localized_message: str = Field(default=None, alias = "localizedMessage")
 
-class Structure(BaseModel):
+class StructureResponse(BaseModel):
     id: int
     name: str
     description: str = Field(default=None)

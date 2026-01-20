@@ -6,7 +6,7 @@ from pydantic import TypeAdapter
 from nicegui import ui
 from utils import Secret
 from jist import JIST
-from specs.forest_spec import ForestComponent
+from specs import ForestComponent
 
 # Setup client
 secret = Secret("secret.ini", "Credentials2")

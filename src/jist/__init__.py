@@ -1,1 +1,1 @@
-from .jist import JIST
+from .jist import JIST, StructureResponse

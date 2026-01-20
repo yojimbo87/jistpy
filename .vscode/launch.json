@@ -8,8 +8,9 @@
             "name": "Python Debugger: Current File",
             "type": "debugpy",
             "request": "launch",
+            //"program": "./src/tests/nicegui/get_structures.py",
+            "program": "./src/tests/nicegui/get_structure.py",
             //"program": "./src/tests/nicegui/get_forest.py",
-            "program": "./src/tests/nicegui/get_value.py",
             "console": "integratedTerminal"
         }
     ]
