@@ -1,0 +1,2 @@
+from specs import AttributeDefinition
+

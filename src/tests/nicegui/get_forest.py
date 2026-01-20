@@ -8,10 +8,14 @@ from utils import Secret
 from jist import JIST
 from specs.forest_spec import ForestComponent
 
+# Setup client
 secret = Secret("secret.ini", "Credentials2")
 jist = JIST(secret.hostname, secret.username, secret.password)
+
+# Retrieve forest data
 data = jist.get_forest(600)
 
+# Setup table columns based on forest specification
 columns = [
     {'name': 'raw_component', 'label': 'Raw component', 'field': 'raw_component', 'align': 'left'},
     {'name': 'row_id', 'label': 'Row ID', 'field': 'row_id', 'required': True, 'align': 'right'},
@@ -22,10 +26,13 @@ columns = [
     {'name': 'row_semantic', 'label': 'Row semantic', 'field': 'row_semantic'}
 ]
 
+# Parse forest data into dictionary for loading into the table as rows
 ta = TypeAdapter(list[ForestComponent])
 rows: list[dict] = ta.dump_python(data.components)
 
+# Setup table
 ui.table(columns=columns, rows=rows, row_key='row_id')
+# Print count of forest items
 ui.label(f"Items count: {len(rows)}")
 
 ui.run()
