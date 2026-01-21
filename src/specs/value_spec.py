@@ -1,10 +1,12 @@
 from pydantic import BaseModel, Field, ConfigDict
 from specs import ForestSpec
 
+
 class AttributeDefinition(BaseModel):
     id: str
     format: str
     params: dict = Field(default=None)
+
 
 class ValueRequestItem(BaseModel):
     forest_spec: ForestSpec = Field(alias="forestSpec")
@@ -13,8 +15,10 @@ class ValueRequestItem(BaseModel):
 
     model_config = ConfigDict(serialize_by_alias=True, populate_by_name=True)
 
+
 class ValueRequest(BaseModel):
     requests: list[ValueRequestItem]
+
 
 class AttributeData(BaseModel):
     attribute: AttributeDefinition
@@ -24,9 +28,11 @@ class AttributeData(BaseModel):
 
     model_config = ConfigDict(serialize_by_alias=True, populate_by_name=True)
 
+
 class Version(BaseModel):
     signature: int
     version: int
+
 
 class ValueResponseItem(BaseModel):
     forest_spec: ForestSpec = Field(alias="forestSpec")
@@ -35,6 +41,7 @@ class ValueResponseItem(BaseModel):
     forest_version: Version = Field(alias="forestVersion")
 
     model_config = ConfigDict(serialize_by_alias=True, populate_by_name=True)
+
 
 class ValueResponse(BaseModel):
     responses: list[ValueResponseItem]

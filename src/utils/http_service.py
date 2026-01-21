@@ -6,8 +6,9 @@ headers = {
     "Accept": "application/json",
     "Content-Type": "application/json",
     "Cache-Control": "no-cache"
-    #"X-Atlassian-Token": "no-check"
+    # "X-Atlassian-Token": "no-check"
 }
+
 
 def init(hostname: str, username: str, password: str) -> None:
     global host
@@ -16,21 +17,23 @@ def init(hostname: str, username: str, password: str) -> None:
     host = hostname
     credentials = (username, password)
 
+
 def get(endpoint: str) -> Response:
     response = rget(
         host + endpoint,
-        headers = headers,
-        auth = credentials
+        headers=headers,
+        auth=credentials
     )
 
     return response
 
+
 def post(endpoint: str, data: str) -> Response:
     response = rpost(
         host + endpoint,
-        headers = headers,
-        auth = credentials,
-        data = data
+        headers=headers,
+        auth=credentials,
+        data=data
     )
 
     return response

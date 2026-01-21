@@ -1,12 +1,12 @@
+from nicegui import ui
+from utils import Secret
+from jist import JIST
+# from pydantic import TypeAdapter
+# from specs import ForestComponent
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
-from nicegui import ui
-from utils import Secret
-from jist import JIST
-from pydantic import TypeAdapter
-from specs import ForestComponent
 
 def get_forest_content() -> None:
     # Setup client
@@ -18,13 +18,32 @@ def get_forest_content() -> None:
     '''
     # Setup table columns based on forest specification
     columns = [
-        {'name': 'raw_component', 'label': 'Raw component', 'field': 'raw_component', 'align': 'left'},
-        {'name': 'row_id', 'label': 'Row ID', 'field': 'row_id', 'required': True, 'align': 'right'},
+        {
+            'name': 'raw_component',
+            'label': 'Raw component',
+            'field': 'raw_component', 'align': 'left'
+        },
+        {
+            'name': 'row_id',
+            'label': 'Row ID',
+            'field': 'row_id',
+            'required': True,
+            'align': 'right'
+        },
         {'name': 'row_depth', 'label': 'Row depth', 'field': 'row_depth'},
         {'name': 'item_type', 'label': 'Item type', 'field': 'item_type'},
-        {'name': 'item_id', 'label': 'Item ID', 'field': 'item_id', 'align': 'left'},
+        {
+            'name': 'item_id',
+            'label': 'Item ID',
+            'field': 'item_id',
+            'align': 'left'
+        },
         {'name': 'issue_id', 'label': 'Issue ID', 'field': 'issue_id'},
-        {'name': 'row_semantic', 'label': 'Row semantic', 'field': 'row_semantic'}
+        {
+            'name': 'row_semantic',
+            'label': 'Row semantic',
+            'field': 'row_semantic'
+        }
     ]
 
     # Parse forest data into dictionary for loading into the table as rows

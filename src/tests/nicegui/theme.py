@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 from nicegui import ui
 
+
 @contextmanager
 def frame(navigation_title: str):
     with ui.row():
@@ -10,7 +11,7 @@ def frame(navigation_title: str):
             ui.link('Get structure', '/get-structure')
             ui.link('Get forest', '/get-forest')
             ui.link('Get value', '/get-value')
-        
+
         with ui.column():
             ui.label(navigation_title)
             yield

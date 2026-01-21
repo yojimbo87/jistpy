@@ -1,10 +1,10 @@
+from nicegui import ui
+from utils import Secret
+from jist import JIST
 import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
-from nicegui import ui
-from utils import Secret
-from jist import JIST
 
 def get_structure_content() -> None:
     # Setup client

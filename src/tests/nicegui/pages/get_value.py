@@ -1,11 +1,11 @@
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent.parent.parent))
-
 from nicegui import ui
 from utils import Secret
 from jist import JIST
 from specs import AttributeDefinition
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
+
 
 def get_value_content() -> None:
     # Setup client
