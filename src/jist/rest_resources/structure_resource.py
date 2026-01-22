@@ -1,6 +1,6 @@
 from pydantic import TypeAdapter
-from specs import StructureResponse
-from utils import http_service as http
+from jist.specs import StructureResponse
+from jist.utils import http_service as http
 
 
 def get_structures() -> list[StructureResponse]:

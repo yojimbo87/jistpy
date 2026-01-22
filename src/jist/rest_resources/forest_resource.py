@@ -1,6 +1,6 @@
 from pydantic import TypeAdapter
-from specs.forest_spec import ForestSpec, ForestResponse
-from utils import http_service as http, forest_parser
+from jist.specs.forest_spec import ForestSpec, ForestResponse
+from jist.utils import http_service as http, forest_parser
 
 
 def get_forest(structure_id: int) -> ForestResponse:

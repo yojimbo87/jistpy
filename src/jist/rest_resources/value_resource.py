@@ -1,6 +1,6 @@
 from pydantic import TypeAdapter
-from specs import ValueRequest, ValueResponse
-from utils import http_service as http
+from jist.specs import ValueRequest, ValueResponse
+from jist.utils import http_service as http
 
 
 def get_value(request: ValueRequest):

@@ -1,4 +1,9 @@
-from specs import (
+from jist.rest_resources import (
+    structure_resource,
+    forest_resource,
+    value_resource
+)
+from jist.specs import (
     StructureResponse,
     ForestSpec,
     ForestResponse,
@@ -10,19 +15,19 @@ from specs import (
 
 
 def get_structures() -> list[StructureResponse]:
-    response = get_structures()
+    response = structure_resource.get_structures()
 
     return response
 
 
 def get_structure(structure_id: int) -> StructureResponse:
-    response = get_structure(structure_id)
+    response = structure_resource.get_structure(structure_id)
 
     return response
 
 
 def get_forest(structure_id: int) -> ForestResponse:
-    response = get_forest(structure_id)
+    response = forest_resource.get_forest(structure_id)
 
     return response
 
@@ -41,6 +46,6 @@ def get_value(
         ]
     )
 
-    response = get_value(request)
+    response = value_resource.get_value(request)
 
     return response

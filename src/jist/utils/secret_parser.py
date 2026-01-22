@@ -11,7 +11,7 @@ class Secret:
             secret_file_path: str,
             credential_section: str) -> None:
         thisfolder = path.dirname(path.abspath(__file__))
-        initfile = path.join(thisfolder, "../" + secret_file_path)
+        initfile = path.join(thisfolder, secret_file_path)
         config = ConfigParser()
         config.read(initfile)
 

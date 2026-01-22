@@ -5,11 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Current File",
+            "name": "Python Debugger: Nicegui tests",
             "type": "debugpy",
             "request": "launch",
             "program": "./src/tests/nicegui/main.py",
-            "console": "integratedTerminal"
+            //"program": "./src/tests/console/main.py",
+            "console": "integratedTerminal",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}/src"
+            },
+            //"args": ["-m", "./src/jist.jist"]
+            //"args": ["-m", "jist.jist"]
         }
     ]
 }

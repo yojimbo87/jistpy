@@ -1,4 +1,4 @@
-from specs import ForestComponent
+from jist.specs import ForestComponent
 
 
 def parse_formula(formula: str) -> list[ForestComponent]:

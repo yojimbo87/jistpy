@@ -1,20 +1,17 @@
 from nicegui import ui
-from utils import Secret
+from jist.utils import Secret
 from jist import JIST
 # from pydantic import TypeAdapter
 # from specs import ForestComponent
-import sys
-from pathlib import Path
-sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 
 def get_forest_content() -> None:
     # Setup client
-    secret = Secret("secret.ini", "Credentials2")
+    secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)
 
     # Retrieve forest data
-    data = jist.get_forest(600)
+    data = jist.rest_api.get_forest(600)
     '''
     # Setup table columns based on forest specification
     columns = [
@@ -56,8 +53,6 @@ def get_forest_content() -> None:
     ui.label(f"Items count: {len(rows)}")
     '''
 
-    # Retrieve forest data
-    data = jist.get_forest(600)
     pretty_json = data.model_dump_json(indent=2)
 
     # Setup web interface

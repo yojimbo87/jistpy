@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
-from specs import ForestSpec
+from jist.specs import ForestSpec
 
 
 class AttributeDefinition(BaseModel):
