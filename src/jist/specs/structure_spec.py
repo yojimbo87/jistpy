@@ -24,25 +24,21 @@ class StructureResponse(BaseModel):
     description: str = Field(default=None)
     read_only: bool = Field(default=None, alias="readOnly")
     edit_requires_parent_issue_permission: bool = Field(
-        default=None, 
+        default=None,
         alias="editRequiresParentIssuePermission"
     )
     owner: str = Field(default=None)
     permissions: list[Permission] = Field(default=None)
 
 
-class StructureColumn(BaseModel):
-    id: str
-    attribute_spec: AttributeSpec = Field(default=None)
-    # TODO: generic type or any?
-    data: str = Field(default=None)
-
-
 class StructureRow(BaseModel):
     id: int
-    columns: dict = Field(default={})
+    attribute_ids: list[str] = Field(default=[])
+    # TODO: generic type or any?
+    values: list[str] = Field(default=[])
 
 
 class Structure(BaseModel):
     id: int
-    rows: dict = Field(default={})
+    attribute_specs: dict[str, AttributeSpec] = Field(default={})
+    rows: list[StructureRow] = Field(default=[])

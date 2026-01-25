@@ -2,8 +2,7 @@ from .structure_spec import (
     StructureResponse,
     Permission,
     Structure,
-    StructureRow,
-    StructureColumn
+    StructureRow
 )
 from .forest_spec import ForestSpec, ForestComponent, ForestResponse
 from .value_spec import (
@@ -16,7 +15,6 @@ from .value_spec import (
 __all__ = [
     Structure,
     StructureRow,
-    StructureColumn,
     StructureResponse,
     Permission,
     ForestSpec,

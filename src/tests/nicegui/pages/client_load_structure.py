@@ -10,7 +10,8 @@ def client_load_structure_content() -> None:
 
     attribute_specs = [
         AttributeSpec(id="summary", format="text"),
-        AttributeSpec(id="status", format="text")
+        AttributeSpec(id="status", format="text"),
+        AttributeSpec(id="labels", format="text")
     ]
 
     # Retrieve structures

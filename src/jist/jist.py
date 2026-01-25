@@ -2,8 +2,7 @@ import jist.utils.http_service as http
 from jist.specs import (
     AttributeSpec,
     Structure,
-    StructureRow,
-    StructureColumn
+    StructureRow
 )
 from jist.rest_resources import rest_api
 
@@ -40,28 +39,22 @@ class JIST:
                 attribute_spec = (
                     data_item.attribute
                 )
+                # Store attribute data in resulting structure
+                structure.attribute_specs[attribute_id] = attribute_spec
 
                 for i_value, value_item in enumerate(data_item.values):
                     row_id = value_response_item.rows[i_value]
                     # Get existing or create new row
-                    structure_row: StructureRow = structure.rows.get(
-                        row_id,
+                    structure_row = next(
+                        (sr for sr in structure.rows if sr.id == row_id),
                         StructureRow(id=row_id)
                     )
-                    # Get existing or create new column
-                    structure_column: StructureColumn = (
-                        structure_row.columns.get(
-                            attribute_id,
-                            StructureColumn(
-                                id=attribute_id,
-                                attribute_spec=attribute_spec,
-                            )
-                        )
-                    )
-                    # Add value to row column
-                    structure_column.data = value_item
-                    # Update or add new column/row data
-                    structure_row.columns[attribute_id] = structure_column
-                    structure.rows[row_id] = structure_row
+                    is_row_new = (len(structure_row.attribute_ids) == 0)
+                    # Add attribute id and value to row data
+                    structure_row.attribute_ids.append(attribute_id)
+                    structure_row.values.append(value_item)
+                    # add row if it's not present yet
+                    if is_row_new:
+                        structure.rows.append(structure_row)
 
         return structure
