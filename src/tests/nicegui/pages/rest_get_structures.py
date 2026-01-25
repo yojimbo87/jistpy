@@ -4,7 +4,7 @@ from jist.utils import Secret
 from jist import JIST, StructureResponse
 
 
-def get_structures_content() -> None:
+def rest_get_structures_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)

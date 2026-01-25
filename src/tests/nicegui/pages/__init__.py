@@ -1,13 +1,13 @@
 from .home import home_content
-from .get_structures import get_structures_content
-from .get_structure import get_structure_content
-from .get_forest import get_forest_content
-from .get_value import get_value_content
+from .rest_get_structures import rest_get_structures_content
+from .rest_get_structure import rest_get_structure_content
+from .rest_get_forest import rest_get_forest_content
+from .rest_get_value import rest_get_value_content
 
 __all__ = [
     home_content,
-    get_structures_content,
-    get_structure_content,
-    get_forest_content,
-    get_value_content
+    rest_get_structures_content,
+    rest_get_structure_content,
+    rest_get_forest_content,
+    rest_get_value_content
 ]

@@ -7,10 +7,22 @@ def frame(navigation_title: str):
     with ui.row():
         with ui.column():
             ui.link('Home', '/')
-            ui.link('Get structures', '/get-structures')
-            ui.link('Get structure', '/get-structure')
-            ui.link('Get forest', '/get-forest')
-            ui.link('Get value', '/get-value')
+
+            ui.label("REST API:")
+            with ui.list():
+                with ui.item():
+                    ui.link('Get structures', '/rest-get-structures')
+                with ui.item():
+                    ui.link('Get structure', '/rest-get-structure')
+                with ui.item():
+                    ui.link('Get forest', '/rest-get-forest')
+                with ui.item():
+                    ui.link('Get value', '/rest-get-value')
+
+            ui.label("Client API:")
+            with ui.list():
+                with ui.item():
+                    ui.link('Get structure', '/client-get-structure')
 
         with ui.column():
             ui.label(navigation_title)

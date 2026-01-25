@@ -2,10 +2,10 @@ from nicegui import APIRouter
 import theme
 from pages import (
     home_content,
-    get_structures_content,
-    get_structure_content,
-    get_forest_content,
-    get_value_content
+    rest_get_structures_content,
+    rest_get_structure_content,
+    rest_get_forest_content,
+    rest_get_value_content
 )
 
 router = APIRouter()
@@ -17,25 +17,25 @@ def home_page():
         home_content()
 
 
-@router.page('/get-structures')
+@router.page('/rest-get-structures')
 def get_structures_page():
-    with theme.frame('Get structures'):
-        get_structures_content()
+    with theme.frame('REST API - Get structures'):
+        rest_get_structures_content()
 
 
-@router.page('/get-structure')
+@router.page('/rest-get-structure')
 def get_structure_page():
-    with theme.frame('Get structure'):
-        get_structure_content()
+    with theme.frame('REST API - Get structure'):
+        rest_get_structure_content()
 
 
-@router.page('/get-forest')
+@router.page('/rest-get-forest')
 def get_forest_page():
-    with theme.frame('Get forest'):
-        get_forest_content()
+    with theme.frame('REST API - Get forest'):
+        rest_get_forest_content()
 
 
-@router.page('/get-value')
+@router.page('/rest-get-value')
 def get_value_page():
-    with theme.frame('Get value'):
-        get_value_content()
+    with theme.frame('REST API - Get value'):
+        rest_get_value_content()

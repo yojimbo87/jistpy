@@ -5,7 +5,7 @@ from jist import JIST
 # from specs import ForestComponent
 
 
-def get_forest_content() -> None:
+def rest_get_forest_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)

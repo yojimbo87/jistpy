@@ -4,7 +4,7 @@ from jist import JIST
 from jist.specs import AttributeDefinition
 
 
-def get_value_content() -> None:
+def rest_get_value_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)
