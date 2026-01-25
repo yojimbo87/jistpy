@@ -18,4 +18,28 @@ def client_load_structure_content() -> None:
     structure = jist.load_structure(613, attribute_specs)
 
     # Setup web interface
-    ui.code(structure.model_dump_json(indent=2)).style('width: 800px')
+    columns = []
+    for k, v in structure.attribute_specs.items():
+        columns.append(
+            {
+                'name': k,
+                'label': v.id,
+                'field': k,
+                'align': 'left'
+            }
+        )
+    rows = []
+    for structure_row in structure.rows:
+        row = {
+            "row_id": structure_row.id
+        }
+
+        for i_attr, attr_id in enumerate(structure_row.attribute_ids):
+            row[attr_id] = structure_row.values[i_attr]
+
+        rows.append(row)
+
+    # Setup table
+    ui.table(columns=columns, rows=rows, row_key='row_id')
+    # Print count of forest items
+    ui.label(f"Items count: {len(structure.rows)}")
