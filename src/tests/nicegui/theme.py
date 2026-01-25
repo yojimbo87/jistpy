@@ -22,7 +22,7 @@ def frame(navigation_title: str):
             ui.label("Client API:")
             with ui.list():
                 with ui.item():
-                    ui.link('Get structure', '/client-get-structure')
+                    ui.link('Load structure', '/client-load-structure')
 
         with ui.column():
             ui.label(navigation_title)

@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from jist.specs.value_spec import AttributeSpec
 
 
 class Permission(BaseModel):
@@ -28,3 +29,20 @@ class StructureResponse(BaseModel):
     )
     owner: str = Field(default=None)
     permissions: list[Permission] = Field(default=None)
+
+
+class StructureColumn(BaseModel):
+    id: str
+    attribute_spec: AttributeSpec = Field(default=None)
+    # TODO: generic type or any?
+    data: str = Field(default=None)
+
+
+class StructureRow(BaseModel):
+    id: int
+    columns: dict = Field(default={})
+
+
+class Structure(BaseModel):
+    id: int
+    rows: dict = Field(default={})

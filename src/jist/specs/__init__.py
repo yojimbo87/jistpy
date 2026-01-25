@@ -1,19 +1,28 @@
-from .structure_spec import StructureResponse, Permission
+from .structure_spec import (
+    StructureResponse,
+    Permission,
+    Structure,
+    StructureRow,
+    StructureColumn
+)
 from .forest_spec import ForestSpec, ForestComponent, ForestResponse
 from .value_spec import (
-    AttributeDefinition,
+    AttributeSpec,
     ValueRequest,
     ValueRequestItem,
     ValueResponse
 )
 
 __all__ = [
+    Structure,
+    StructureRow,
+    StructureColumn,
     StructureResponse,
     Permission,
     ForestSpec,
     ForestComponent,
     ForestResponse,
-    AttributeDefinition,
+    AttributeSpec,
     ValueRequest,
     ValueRequestItem,
     ValueResponse

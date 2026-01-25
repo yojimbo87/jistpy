@@ -5,7 +5,8 @@ from pages import (
     rest_get_structures_content,
     rest_get_structure_content,
     rest_get_forest_content,
-    rest_get_value_content
+    rest_get_value_content,
+    client_load_structure_content
 )
 
 router = APIRouter()
@@ -39,3 +40,9 @@ def get_forest_page():
 def get_value_page():
     with theme.frame('REST API - Get value'):
         rest_get_value_content()
+
+
+@router.page('/client-load-structure')
+def load_structure_page():
+    with theme.frame('Client - Load structure'):
+        client_load_structure_content()

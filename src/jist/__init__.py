@@ -3,10 +3,11 @@ from .rest_resources import (
     rest_api
 )
 from .specs import (
+    Structure,
     StructureResponse,
     ForestSpec,
     ForestResponse,
-    AttributeDefinition,
+    AttributeSpec,
     ValueRequestItem,
     ValueRequest,
     ValueResponse
@@ -15,10 +16,11 @@ from .specs import (
 __all__ = [
     JIST,
     rest_api,
+    Structure,
     StructureResponse,
     ForestSpec,
     ForestResponse,
-    AttributeDefinition,
+    AttributeSpec,
     ValueRequestItem,
     ValueRequest,
     ValueResponse

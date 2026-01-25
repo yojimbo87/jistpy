@@ -1,7 +1,7 @@
 from nicegui import ui
 from jist.utils import Secret
 from jist import JIST
-from jist.specs import AttributeDefinition
+from jist.specs import AttributeSpec
 
 
 def rest_get_value_content() -> None:
@@ -14,7 +14,7 @@ def rest_get_value_content() -> None:
         600,
         [807094, 807096, 807086, 9993, 9999, 10023],
         [
-            AttributeDefinition(
+            AttributeSpec(
                 id="summary",
                 format="text"
             )

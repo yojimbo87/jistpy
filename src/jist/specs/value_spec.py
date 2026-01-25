@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field, ConfigDict
-from jist.specs import ForestSpec
+from jist.specs.forest_spec import ForestSpec
 
 
-class AttributeDefinition(BaseModel):
+class AttributeSpec(BaseModel):
     id: str
     format: str
     params: dict = Field(default=None)
@@ -11,7 +11,7 @@ class AttributeDefinition(BaseModel):
 class ValueRequestItem(BaseModel):
     forest_spec: ForestSpec = Field(alias="forestSpec")
     rows: list[int]
-    attributes: list[AttributeDefinition]
+    attributes: list[AttributeSpec]
 
     model_config = ConfigDict(serialize_by_alias=True, populate_by_name=True)
 
@@ -21,7 +21,7 @@ class ValueRequest(BaseModel):
 
 
 class AttributeData(BaseModel):
-    attribute: AttributeDefinition
+    attribute: AttributeSpec
     values: list
     trail_mode: str = Field(default=None, alias="trailMode")
     trails: list[str]

@@ -7,7 +7,7 @@ from jist.specs import (
     StructureResponse,
     ForestSpec,
     ForestResponse,
-    AttributeDefinition,
+    AttributeSpec,
     ValueRequestItem,
     ValueRequest,
     ValueResponse
@@ -35,7 +35,7 @@ def get_forest(structure_id: int) -> ForestResponse:
 def get_value(
         structure_id: int,
         rows: list[int],
-        attributes: list[AttributeDefinition]) -> ValueResponse:
+        attributes: list[AttributeSpec]) -> ValueResponse:
     request = ValueRequest(
         requests=[
             ValueRequestItem(
