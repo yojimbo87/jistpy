@@ -6,6 +6,7 @@ from pages import (
     rest_get_structure_content,
     rest_get_forest_content,
     rest_get_value_content,
+    rest_get_default_view_content,
     client_load_structure_content
 )
 
@@ -40,6 +41,12 @@ def get_forest_page():
 def get_value_page():
     with theme.frame('REST API - Get value'):
         rest_get_value_content()
+
+
+@router.page('/rest-get-default-view')
+def get_default_view_page():
+    with theme.frame('REST API - Get default view'):
+        rest_get_default_view_content()
 
 
 @router.page('/client-load-structure')

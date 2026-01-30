@@ -13,9 +13,7 @@
             "console": "integratedTerminal",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}/src"
-            },
-            //"args": ["-m", "./src/jist.jist"]
-            //"args": ["-m", "jist.jist"]
+            }
         }
     ]
 }

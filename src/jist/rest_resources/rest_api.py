@@ -1,7 +1,8 @@
 from jist.rest_resources import (
     structure_resource,
     forest_resource,
-    value_resource
+    value_resource,
+    view_resource
 )
 from jist.specs import (
     StructureResponse,
@@ -10,7 +11,8 @@ from jist.specs import (
     AttributeSpec,
     ValueRequestItem,
     ValueRequest,
-    ValueResponse
+    ValueResponse,
+    ViewResponse
 )
 
 
@@ -47,5 +49,11 @@ def get_value(
     )
 
     response = value_resource.get_value(request)
+
+    return response
+
+
+def get_default_view(structure_id: int) -> ViewResponse:
+    response = view_resource.get_default_view(structure_id)
 
     return response

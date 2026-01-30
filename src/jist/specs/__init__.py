@@ -4,12 +4,21 @@ from .structure_spec import (
     Structure,
     StructureRow
 )
-from .forest_spec import ForestSpec, ForestComponent, ForestResponse
+from .forest_spec import (
+    ForestSpec,
+    ForestComponent,
+    ForestResponse
+)
 from .value_spec import (
     AttributeSpec,
     ValueRequest,
     ValueRequestItem,
     ValueResponse
+)
+from .view_spec import (
+    ColumnSpec,
+    ViewSpec,
+    ViewResponse
 )
 
 __all__ = [
@@ -23,5 +32,8 @@ __all__ = [
     AttributeSpec,
     ValueRequest,
     ValueRequestItem,
-    ValueResponse
+    ValueResponse,
+    ColumnSpec,
+    ViewSpec,
+    ViewResponse
 ]

@@ -18,6 +18,8 @@ def frame(navigation_title: str):
                     ui.link('Get forest', '/rest-get-forest')
                 with ui.item():
                     ui.link('Get value', '/rest-get-value')
+                with ui.item():
+                    ui.link('Get default view', '/rest-get-default-view')
 
             ui.label("Client API:")
             with ui.list():
