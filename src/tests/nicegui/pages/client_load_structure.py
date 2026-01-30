@@ -8,6 +8,7 @@ def client_load_structure_content() -> None:
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)
 
+    '''
     attribute_specs = [
         AttributeSpec(id="summary", format="text"),
         AttributeSpec(id="status", format="text"),
@@ -15,7 +16,9 @@ def client_load_structure_content() -> None:
     ]
 
     # Retrieve structures
-    structure = jist.load_structure(613, attribute_specs)
+    structure = jist.load_structure_attributes(613, attribute_specs)
+    '''
+    structure = jist.load_structure_view(613)
 
     # Setup web interface
     columns = []

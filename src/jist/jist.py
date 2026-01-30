@@ -13,7 +13,35 @@ class JIST:
 
         self.rest_api: rest_api = rest_api
 
-    def load_structure(
+    # Loads structure data with default view attributes
+    def load_structure_view(self, structure_id: int) -> Structure:
+        view_response = self.rest_api.get_default_view(structure_id)
+
+        attribute_specs: list[AttributeSpec] = []
+
+        for column_spec in view_response.spec.columns:
+            attribute_id: str = ""
+            attribute_format = "text"
+            attribute_params: dict = {}
+
+            if column_spec.key == "field":
+                attribute_id = column_spec.params["field"]
+            elif column_spec.key == "formula":
+                attribute_id = "expr"
+                attribute_params = column_spec.params
+
+            attribute_specs.append(
+                AttributeSpec(
+                    id=attribute_id,
+                    format=attribute_format,
+                    params=attribute_params
+                )
+            )
+
+        return self.load_structure_attributes(structure_id, attribute_specs)
+
+    # Loads structure data for specified attributes
+    def load_structure_attributes(
             self, structure_id: int,
             attribute_specs: list[AttributeSpec]) -> Structure:
         forest_response = self.rest_api.get_forest(structure_id=structure_id)
