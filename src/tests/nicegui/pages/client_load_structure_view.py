@@ -1,21 +1,15 @@
 from nicegui import ui
 from jist.utils import Secret
-from jist import JIST, AttributeSpec
+from jist import JIST
 
 
-def client_load_structure_content() -> None:
+def client_load_structure_view_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)
 
-    attribute_specs = [
-        AttributeSpec(id="summary", format="text"),
-        AttributeSpec(id="status", format="text"),
-        AttributeSpec(id="labels", format="text")
-    ]
-
-    # Retrieve structure data with specified attributes
-    structure = jist.load_structure(613, attribute_specs)
+    # Retrieve structure data with default view attributes
+    structure = jist.load_structure_view(613)
 
     # Setup web interface
     columns = []

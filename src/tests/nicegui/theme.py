@@ -25,6 +25,11 @@ def frame(navigation_title: str):
             with ui.list():
                 with ui.item():
                     ui.link('Load structure', '/client-load-structure')
+                with ui.item():
+                    ui.link(
+                        'Load structure view',
+                        '/client-load-structure-view'
+                    )
 
         with ui.column():
             ui.label(navigation_title)

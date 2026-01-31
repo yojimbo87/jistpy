@@ -7,7 +7,8 @@ from pages import (
     rest_get_forest_content,
     rest_get_value_content,
     rest_get_default_view_content,
-    client_load_structure_content
+    client_load_structure_content,
+    client_load_structure_view_content
 )
 
 router = APIRouter()
@@ -53,3 +54,9 @@ def get_default_view_page():
 def load_structure_page():
     with theme.frame('Client - Load structure'):
         client_load_structure_content()
+
+
+@router.page('/client-load-structure-view')
+def load_structure_view_page():
+    with theme.frame('Client - Load structure view'):
+        client_load_structure_view_content()

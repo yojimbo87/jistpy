@@ -38,10 +38,10 @@ class JIST:
                 )
             )
 
-        return self.load_structure_attributes(structure_id, attribute_specs)
+        return self.load_structure(structure_id, attribute_specs)
 
     # Loads structure data for specified attributes
-    def load_structure_attributes(
+    def load_structure(
             self, structure_id: int,
             attribute_specs: list[AttributeSpec]) -> Structure:
         forest_response = self.rest_api.get_forest(structure_id=structure_id)
