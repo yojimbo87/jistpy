@@ -2,6 +2,7 @@ from nicegui import APIRouter
 import theme
 from pages import (
     home_content,
+    rest_get_config_content,
     rest_get_structures_content,
     rest_get_structure_content,
     rest_get_forest_content,
@@ -19,6 +20,12 @@ router = APIRouter()
 def home_page():
     with theme.frame('Home'):
         home_content()
+
+
+@router.page('/rest-get-config')
+def get_attributes_page():
+    with theme.frame('REST API - Get config'):
+        rest_get_config_content()
 
 
 @router.page('/rest-get-structures')

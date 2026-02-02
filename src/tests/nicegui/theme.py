@@ -11,6 +11,8 @@ def frame(navigation_title: str):
             ui.label("REST API:")
             with ui.list():
                 with ui.item():
+                    ui.link('Get config', '/rest-get-config')
+                with ui.item():
                     ui.link('Get structures', '/rest-get-structures')
                 with ui.item():
                     ui.link('Get structure', '/rest-get-structure')

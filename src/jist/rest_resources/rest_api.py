@@ -1,10 +1,12 @@
 from jist.rest_resources import (
+    config_resource,
     structure_resource,
     forest_resource,
     value_resource,
     view_resource
 )
 from jist.specs import (
+    ConfigResponse,
     StructureResponse,
     ForestSpec,
     ForestResponse,
@@ -14,6 +16,12 @@ from jist.specs import (
     ValueResponse,
     ViewResponse
 )
+
+
+def get_config() -> ConfigResponse:
+    response = config_resource.get_config()
+
+    return response
 
 
 def get_structures() -> list[StructureResponse]:
@@ -61,5 +69,11 @@ def get_default_view(structure_id: int) -> ViewResponse:
 
 def get_view(view_id: int) -> ViewResponse:
     response = view_resource.get_view(view_id)
+
+    return response
+
+
+def get_attributes() -> str:
+    response = config_resource.get_attributes()
 
     return response

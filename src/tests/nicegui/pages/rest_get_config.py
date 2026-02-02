@@ -3,13 +3,13 @@ from jist.utils import Secret
 from jist import JIST
 
 
-def rest_get_view_content() -> None:
+def rest_get_config_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)
 
-    # Retrieve view data
-    data = jist.rest_api.get_view(218)
+    # Retrieve config data
+    data = jist.rest_api.get_config()
     pretty_json = data.model_dump_json(indent=2)
 
     # Setup web interface

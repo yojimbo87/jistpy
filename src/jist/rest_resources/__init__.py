@@ -1,4 +1,5 @@
 from .rest_api import (
+    get_config,
     get_structures,
     get_structure,
     get_forest,
@@ -8,6 +9,7 @@ from .rest_api import (
 )
 
 __all__ = [
+    get_config,
     get_structures,
     get_structure,
     get_forest,
