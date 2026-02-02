@@ -57,3 +57,9 @@ def get_default_view(structure_id: int) -> ViewResponse:
     response = view_resource.get_default_view(structure_id)
 
     return response
+
+
+def get_view(view_id: int) -> ViewResponse:
+    response = view_resource.get_view(view_id)
+
+    return response

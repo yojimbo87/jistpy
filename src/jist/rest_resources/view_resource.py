@@ -12,3 +12,11 @@ def get_default_view(structure_id: int) -> ViewResponse:
     validated_data = TypeAdapter(ViewResponse).validate_python(json_data)
 
     return validated_data
+
+
+def get_view(view_id: int) -> ViewResponse:
+    response = http.get(f"rest/structure/1.0/view/{view_id}")
+    json_data = response.json()
+    validated_data = TypeAdapter(ViewResponse).validate_python(json_data)
+
+    return validated_data
