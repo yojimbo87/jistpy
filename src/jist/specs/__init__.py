@@ -17,6 +17,8 @@ from .forest_spec import (
     ForestResponse
 )
 from .value_spec import (
+    JiraFieldType,
+    AttributeValueFormat,
     AttributeSpec,
     ValueRequest,
     ValueRequestItem,
@@ -40,6 +42,8 @@ __all__ = [
     ForestSpec,
     ForestComponent,
     ForestResponse,
+    JiraFieldType,
+    AttributeValueFormat,
     AttributeSpec,
     ValueRequest,
     ValueRequestItem,

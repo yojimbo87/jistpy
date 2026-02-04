@@ -1,5 +1,6 @@
 import jist.utils.http_service as http
 from jist.specs import (
+    AttributeValueFormat,
     JiraConfig,
     AttributeSpec,
     Structure,
@@ -43,12 +44,20 @@ class JIST:
         # Create list of attribute specs for retrieval of structure data
         for column_spec in view_response.spec.columns:
             attribute_id: str = ""
-            attribute_format = "text"
+            # TODO: for now default format is set to retrieve text
+            attribute_format = AttributeValueFormat.text
             attribute_params: dict = {}
 
             # Determine attribute id based on column key
             if column_spec.key == "field":
-                attribute_id = column_spec.params["field"]
+                field: str = column_spec.params["field"]
+                attribute_id = field
+
+                if field.startswith("customfield_"):
+                    attribute_id = "customfield"
+                    attribute_params["fieldId"] = field[12:]
+                else:
+                    attribute_id = field
             elif column_spec.key == "formula":
                 attribute_id = "expr"
                 attribute_params = column_spec.params
