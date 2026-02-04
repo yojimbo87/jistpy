@@ -71,9 +71,3 @@ def get_view(view_id: int) -> ViewResponse:
     response = view_resource.get_view(view_id)
 
     return response
-
-
-def get_attributes() -> str:
-    response = config_resource.get_attributes()
-
-    return response

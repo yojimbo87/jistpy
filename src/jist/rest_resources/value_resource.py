@@ -3,7 +3,7 @@ from jist.specs import ValueRequest, ValueResponse
 from jist.utils import http_service as http
 
 
-def get_value(request: ValueRequest):
+def get_value(request: ValueRequest) -> ValueResponse:
     request_json_data = request.model_dump_json(exclude_none=True)
     response = http.post("rest/structure/2.0/value", request_json_data)
 

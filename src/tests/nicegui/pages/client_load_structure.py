@@ -19,12 +19,12 @@ def client_load_structure_content() -> None:
 
     # Setup web interface
     columns = []
-    for k, v in structure.attribute_specs.items():
+    for attr_spec in structure.attribute_specs:
         columns.append(
             {
-                'name': k,
-                'label': v.id,
-                'field': k,
+                'name': attr_spec.id,
+                'label': attr_spec.id,
+                'field': attr_spec.id,
                 'align': 'left'
             }
         )

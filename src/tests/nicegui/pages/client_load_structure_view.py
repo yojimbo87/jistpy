@@ -8,17 +8,20 @@ def client_load_structure_view_content() -> None:
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)
 
+    # Retrieve config (widget)
+    jist.load_config()
+
     # Retrieve structure data with default view attributes
     structure = jist.load_structure_view(613)
 
     # Setup web interface
     columns = []
-    for k, v in structure.attribute_specs.items():
+    for csid, column in structure.columns.items():
         columns.append(
             {
-                'name': k,
-                'label': v.id,
-                'field': k,
+                'name': csid,
+                'label': column.name,
+                'field': csid,
                 'align': 'left'
             }
         )
@@ -28,8 +31,11 @@ def client_load_structure_view_content() -> None:
             "row_id": structure_row.id
         }
 
-        for i_attr, attr_id in enumerate(structure_row.attribute_ids):
-            row[attr_id] = structure_row.values[i_attr]
+        # for i_attr, attr_id in enumerate(structure_row.attribute_ids):
+        #     row[attr_id] = structure_row.values[i_attr]
+        for i_value, value in enumerate(structure_row.values):
+            csid = structure_row.csids[i_value]
+            row[csid] = value
 
         rows.append(row)
 

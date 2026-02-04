@@ -8,7 +8,7 @@ def rest_get_config_content() -> None:
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)
 
-    # Retrieve config data
+    # Retrieve Jira config data
     data = jist.rest_api.get_config()
     pretty_json = data.model_dump_json(indent=2)
 

@@ -31,8 +31,16 @@ class StructureResponse(BaseModel):
     permissions: list[Permission] = Field(default=None)
 
 
+class StructureColumn(BaseModel):
+    csid: str
+    key: str
+    name: str = Field(default="")
+    attribute_id: str
+
+
 class StructureRow(BaseModel):
     id: int
+    csids: list[str] = Field(default=[])
     attribute_ids: list[str] = Field(default=[])
     # TODO: generic type or any?
     values: list[str] = Field(default=[])
@@ -40,5 +48,6 @@ class StructureRow(BaseModel):
 
 class Structure(BaseModel):
     id: int
-    attribute_specs: dict[str, AttributeSpec] = Field(default={})
+    attribute_specs: list[AttributeSpec] = Field(default=[])
+    columns: dict[str, StructureColumn] = Field(default={})
     rows: list[StructureRow] = Field(default=[])

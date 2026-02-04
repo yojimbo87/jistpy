@@ -1,5 +1,6 @@
 from .config_spec import (
     JiraField,
+    JiraConfig,
     ConfigResponse
 )
 
@@ -7,6 +8,7 @@ from .structure_spec import (
     StructureResponse,
     Permission,
     Structure,
+    StructureColumn,
     StructureRow
 )
 from .forest_spec import (
@@ -28,8 +30,10 @@ from .view_spec import (
 
 __all__ = [
     JiraField,
+    JiraConfig,
     ConfigResponse,
     Structure,
+    StructureColumn,
     StructureRow,
     StructureResponse,
     Permission,
