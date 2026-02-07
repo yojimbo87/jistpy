@@ -1,6 +1,6 @@
 from nicegui import ui
 from jist.utils import Secret
-from jist import JIST, AttributeSpec
+from jist import JIST, AttributeId, AttributeValueFormat, AttributeSpec
 
 
 def client_load_structure_content() -> None:
@@ -9,9 +9,18 @@ def client_load_structure_content() -> None:
     jist = JIST(secret.hostname, secret.username, secret.password)
 
     attribute_specs = [
-        AttributeSpec(id="summary", format="text"),
-        AttributeSpec(id="status", format="text"),
-        AttributeSpec(id="labels", format="text")
+        AttributeSpec(
+            id=AttributeId.SUMMARY,
+            format=AttributeValueFormat.TEXT
+        ),
+        AttributeSpec(
+            id=AttributeId.STATUS,
+            format=AttributeValueFormat.TEXT
+        ),
+        AttributeSpec(
+            id=AttributeId.LABELS,
+            format=AttributeValueFormat.TEXT
+        )
     ]
 
     # Retrieve structure data with specified attributes
@@ -19,23 +28,25 @@ def client_load_structure_content() -> None:
 
     # Setup web interface
     columns = []
-    for attr_spec in structure.attribute_specs:
+    for column in structure.columns:
         columns.append(
             {
-                'name': attr_spec.id,
-                'label': attr_spec.id,
-                'field': attr_spec.id,
+                'name': column.csid,
+                'label': f"{column.name} ({column.csid}, {column.key})",
+                'field': column.csid,
                 'align': 'left'
             }
         )
+
     rows = []
     for structure_row in structure.rows:
         row = {
             "row_id": structure_row.id
         }
 
-        for i_attr, attr_id in enumerate(structure_row.attribute_ids):
-            row[attr_id] = structure_row.values[i_attr]
+        for i_column, column in enumerate(structure.columns):
+            csid = column.csid
+            row[csid] = structure_row.values[i_column]
 
         rows.append(row)
 

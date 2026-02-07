@@ -1,5 +1,6 @@
 import jist.utils.http_service as http
 from jist.specs import (
+    AttributeId,
     AttributeValueFormat,
     JiraConfig,
     AttributeSpec,
@@ -40,43 +41,36 @@ class JIST:
             self.load_config()
 
         attribute_specs: list[AttributeSpec] = []
+        structure_columns: list[StructureColumn] = []
 
         # Create list of attribute specs for retrieval of structure data
         for column_spec in view_response.spec.columns:
-            attribute_id: str = ""
+            # By default attribute ID is unknown before parsing
+            attribute_id = AttributeId.UNKNOWN
             # TODO: for now default format is set to retrieve text
-            attribute_format = AttributeValueFormat.text
-            attribute_params: dict = {}
+            attribute_format = AttributeValueFormat.TEXT
+            attribute_params = {}
 
-            # Determine attribute id based on column key
+            # Determine attribute id and params based on column spec key
+            # If key is field based
             if column_spec.key == "field":
                 field: str = column_spec.params["field"]
-                attribute_id = field
 
+                # Parsing of customfield attribute
                 if field.startswith("customfield_"):
-                    attribute_id = "customfield"
+                    attribute_id = AttributeId.CUSTOMFIELD
                     attribute_params["fieldId"] = field[12:]
+                # In other cases try to parse the field as standard
+                # fieldattribute
                 else:
-                    attribute_id = field
+                    attribute_id = AttributeId(field)
+            # If key is formula based
             elif column_spec.key == "formula":
-                attribute_id = "expr"
+                attribute_id = AttributeId.FORMULA
                 attribute_params = column_spec.params
 
-            attribute_specs.append(
-                AttributeSpec(
-                    id=attribute_id,
-                    format=attribute_format,
-                    params=attribute_params
-                )
-            )
-
-        # Retrieve structure data
-        structure = self.load_structure(structure_id, attribute_specs)
-
-        # Create column definitions for structure data
-        for column_spec in view_response.spec.columns:
-            column_name: str = ""
-            attribute_id: str = ""
+            # Determine column name (can be different than attribute ID)
+            column_name = ""
 
             # If column has name in it's spec
             if (column_spec.name):
@@ -84,13 +78,6 @@ class JIST:
             # If column is field
             elif ((column_spec.key == "field") and
                   ("field" in column_spec.params)):
-                # Determine attribute id from column spec params field
-                attribute_id = next(
-                    atts.id
-                    for atts in attribute_specs
-                    if atts.id == column_spec.params["field"]
-                )
-
                 # Load column name from config if it's applicable
                 if apply_config:
                     column_name = next(
@@ -103,12 +90,29 @@ class JIST:
                 # Name of the formula is located in name field
                 column_name = column_spec.name
 
-            structure.columns[column_spec.csid] = StructureColumn(
-                csid=column_spec.csid,
-                key=column_spec.key,
-                name=column_name,
-                attribute_id=attribute_id
+            # Create attribute spec based on previously processed data
+            attribute_spec = AttributeSpec(
+                id=attribute_id,
+                format=attribute_format,
+                params=attribute_params
             )
+            # Add to the list of attribute specs to be sent in request
+            attribute_specs.append(attribute_spec)
+            # Add to the list of columns to know which row value belongs to
+            # which column - nth row value corresponds to nth column definition
+            structure_columns.append(
+                StructureColumn(
+                    csid=column_spec.csid,
+                    key=column_spec.key,
+                    name=column_name,
+                    attribute_spec=attribute_spec
+                )
+            )
+
+        # Retrieve structure data
+        structure = self.load_structure(structure_id, attribute_specs)
+        # Once structure data is retrieved, copy also column definitions
+        structure.columns = structure_columns
 
         return structure
 
@@ -116,46 +120,42 @@ class JIST:
     def load_structure(
             self, structure_id: int,
             attribute_specs: list[AttributeSpec]) -> Structure:
+        # Load forest data
         forest_response = self.rest_api.get_forest(structure_id=structure_id)
-
+        # Get row IDs from forest components
         row_ids = [
             component.row_id
             for component in forest_response.components
         ]
-
+        # Load forest values
         value_response = self.rest_api.get_value(
             forest_response.spec.structure_id,
             row_ids,
-            attribute_specs)
-
+            attribute_specs
+        )
+        # Create new structure object into which will be data stored
         structure = Structure(id=structure_id)
 
+        # Iterate through responses
         for value_response_item in value_response.responses:
-            # Iterate through row attributes
-            for i_data, data_item in enumerate(value_response_item.data):
-                # Which attribute do we have data for
-                attribute_id = data_item.attribute.id
-                attribute_spec = (
-                    data_item.attribute
-                )
-                # Store attribute data in resulting structure
-                structure.attribute_specs.append(attribute_spec)
-
+            # Iterate through response data
+            for data_item in value_response_item.data:
                 # Iterate through values of specific attribute
                 for i_value, value_item in enumerate(data_item.values):
-                    # Which row is the value for
+                    # Which row ID is the value for
                     row_id = value_response_item.rows[i_value]
-                    # Get existing or create new row
+                    # Get existing or create new row - this needs to be either
+                    # created or loaded from existing rows, because row values
+                    # are stored for individual attributes/columns
                     structure_row = next(
                         (sr for sr in structure.rows if sr.id == row_id),
                         StructureRow(id=row_id)
                     )
-                    is_row_new = (len(structure_row.attribute_ids) == 0)
-                    # Add metadata and value to resulting structure row
-                    structure_row.csids.append(i_data + 1)
-                    structure_row.attribute_ids.append(attribute_id)
+                    is_row_new = (len(structure_row.values) == 0)
+
+                    # Add row value
                     structure_row.values.append(value_item)
-                    # add row if it's not present yet
+                    # Add row if it's not present yet
                     if is_row_new:
                         structure.rows.append(structure_row)
 

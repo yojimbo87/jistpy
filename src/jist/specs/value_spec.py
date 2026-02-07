@@ -1,46 +1,76 @@
 from enum import Enum
+import json
 from pydantic import BaseModel, Field, ConfigDict
 from jist.specs.forest_spec import ForestSpec
 
 
-class JiraFieldType(str, Enum):
-    any = "any"
-    array = "array"
-    custom = "custom"
-    date = "date"
-    datetime = "datetime"
-    number = "number"
-    option = "option"
-    priority = "priority"
-    progress = "progress"
-    project = "project"
-    resolution = "resolution"
-    security_level = "securitylevel"
-    status = "status"
-    string = "string"
-    user = "user"
-    votes = "votes"
-    watches = "watches"
+class AttributeId(str, Enum):
+    AFFECTS_VERSIONS = "versions"
+    ASSIGNEE = "assignee"
+    COMPONENTS = "components"
+    CREATED = "created"
+    CREATOR = "creator"
+    CUSTOMFIELD = "customfield"
+    DESCRIPTION = "description"
+    DISPLAYABLE = "displayable"
+    DONE = "done"
+    DUEDATE = "duedate"
+    EDITABLE = "editable"
+    FIX_VERSIONS = "fixVersions"
+    FORMULA = "expr"
+    ICON = "icon"
+    ISSUETYPE = "issuetype"
+    ITEM = "item"
+    KEY = "key"
+    LABELS = "labels"
+    PRIORITY = "priority"
+    PROGRESS = "progress"
+    PROJECT = "project"
+    REPORTER = "reporter"
+    STATUS = "status"
+    SUM = "sum"
+    SUMMARY = "summary"
+    TYPE = "type"
+    UNKNOWN = "unknown"
+    UPDATED = "updated"
+    URL = "url"
+    USER = "user"
+    VOTES = "votes"
+    WATCHES = "watches"
 
 
 class AttributeValueFormat(str, Enum):
-    any = "any"
-    boolean = "boolean"
-    duration = "duration"
-    html = "html"
-    id = "id"
-    json_array = "json_array"
-    json_object = "json_object"
-    number = "number"
-    order = "order"
-    text = "text"
-    time = "time"
+    ANY = "any"
+    BOOLEAN = "boolean"
+    DURATION = "duration"
+    HTML = "html"
+    ID = "id"
+    JSON_ARRAY = "json_array"
+    JSON_OBJECT = "json"
+    NUMBER = "number"
+    ORDER = "order"
+    TEXT = "text"
+    TIME = "time"
 
 
 class AttributeSpec(BaseModel):
-    id: str
-    format: str
+    id: AttributeId
+    format: AttributeValueFormat
     params: dict = Field(default=None)
+
+    def __eq__(self, other):
+        if not isinstance(other, AttributeSpec):
+            # Don't attempt to compare against unrelated types
+            return NotImplemented
+
+        self_params_dump = json.dumps(self.params, sort_keys=True)
+        other_params_dump = json.dumps(other.params, sort_keys=True)
+
+        return (
+            self.id == other.id and
+            self.format == other.format and
+            self_params_dump == other_params_dump
+        )
 
 
 class ValueRequestItem(BaseModel):

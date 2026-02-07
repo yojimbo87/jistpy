@@ -12,30 +12,29 @@ def client_load_structure_view_content() -> None:
     jist.load_config()
 
     # Retrieve structure data with default view attributes
-    structure = jist.load_structure_view(613)
+    structure = jist.load_structure_view(575)
 
     # Setup web interface
     columns = []
-    for csid, column in structure.columns.items():
+    for column in structure.columns:
         columns.append(
             {
-                'name': csid,
-                'label': column.name,
-                'field': csid,
+                'name': column.csid,
+                'label': f"{column.name} ({column.csid}, {column.key})",
+                'field': column.csid,
                 'align': 'left'
             }
         )
+
     rows = []
     for structure_row in structure.rows:
         row = {
             "row_id": structure_row.id
         }
 
-        # for i_attr, attr_id in enumerate(structure_row.attribute_ids):
-        #     row[attr_id] = structure_row.values[i_attr]
-        for i_value, value in enumerate(structure_row.values):
-            csid = structure_row.csids[i_value]
-            row[csid] = value
+        for i_column, column in enumerate(structure.columns):
+            csid = column.csid
+            row[csid] = structure_row.values[i_column]
 
         rows.append(row)
 

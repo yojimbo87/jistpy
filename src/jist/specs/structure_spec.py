@@ -1,3 +1,4 @@
+from enum import Enum
 from pydantic import BaseModel, Field
 from jist.specs.value_spec import AttributeSpec
 
@@ -31,23 +32,28 @@ class StructureResponse(BaseModel):
     permissions: list[Permission] = Field(default=None)
 
 
+class StructureColumnKey(str, Enum):
+    ACTIONS = "actions"
+    FIELD = "field"
+    FORMULA = "formula"
+    HANDLE = "handle"
+    MAIN = "main"
+
+
 class StructureColumn(BaseModel):
     csid: str
-    key: str
+    key: StructureColumnKey
     name: str = Field(default="")
-    attribute_id: str
+    attribute_spec: AttributeSpec
 
 
 class StructureRow(BaseModel):
     id: int
-    csids: list[str] = Field(default=[])
-    attribute_ids: list[str] = Field(default=[])
     # TODO: generic type or any?
     values: list[str] = Field(default=[])
 
 
 class Structure(BaseModel):
     id: int
-    attribute_specs: list[AttributeSpec] = Field(default=[])
-    columns: dict[str, StructureColumn] = Field(default={})
+    columns: list[StructureColumn] = Field(default=[])
     rows: list[StructureRow] = Field(default=[])
