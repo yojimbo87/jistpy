@@ -51,45 +51,45 @@ class JIST:
             # TODO: for now default format is set to retrieve text
             attribute_format = AttributeValueFormat.TEXT
             attribute_params = {}
-
-            # Determine attribute id and params based on column spec key
-            # If key is field based
-            if column_spec.key == "field":
-                field: str = column_spec.params["field"]
-
-                # Parsing of customfield attribute
-                if field.startswith("customfield_"):
-                    attribute_id = AttributeId.CUSTOMFIELD
-                    attribute_params["fieldId"] = field[12:]
-                # In other cases try to parse the field as standard
-                # fieldattribute
-                else:
-                    attribute_id = AttributeId(field)
-            # If key is formula based
-            elif column_spec.key == "formula":
-                attribute_id = AttributeId.FORMULA
-                attribute_params = column_spec.params
-
-            # Determine column name (can be different than attribute ID)
+            # Column name can be different than attribute ID
             column_name = ""
 
-            # If column has name in it's spec
-            if (column_spec.name):
+            # Load column name from spec if it's present
+            if column_spec.name:
                 column_name = column_spec.name
-            # If column is field
-            elif ((column_spec.key == "field") and
-                  ("field" in column_spec.params)):
-                # Load column name from config if it's applicable
-                if apply_config:
-                    column_name = next(
-                        v.name
-                        for k, v in self.jira_config.fields.items()
-                        if v.id == attribute_id
-                    )
-            # If column is formula
-            elif (column_spec.key == "formula"):
-                # Name of the formula is located in name field
-                column_name = column_spec.name
+
+            # Column spec key can determine attribute data and column name
+            match column_spec.key:
+                case "main":
+                    # Main key represents column which should always be item
+                    # summary field
+                    attribute_id = AttributeId.SUMMARY
+                case "field":
+                    # Get field name from column spec
+                    field: str = column_spec.params["field"]
+
+                    # If field is customfield attribute
+                    if field.startswith("customfield_"):
+                        attribute_id = AttributeId.CUSTOMFIELD
+                        attribute_params["fieldId"] = field[12:]
+                    # In other cases try to parse the field as standard
+                    # fieldattribute
+                    else:
+                        attribute_id = AttributeId(field)
+
+                    # Load column name from config if it's applicable
+                    if apply_config:
+                        column_name = next(
+                            (
+                                v.name
+                                for k, v in self.jira_config.fields.items()
+                                if v.id == attribute_id
+                            ),
+                            column_spec.name
+                        )
+                case "formula":
+                    attribute_id = AttributeId.FORMULA
+                    attribute_params = column_spec.params
 
             # Create attribute spec based on previously processed data
             attribute_spec = AttributeSpec(
