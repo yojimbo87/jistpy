@@ -31,7 +31,7 @@ class AttributeId(str, Enum):
     SUM = "sum"
     SUMMARY = "summary"
     TYPE = "type"
-    UNKNOWN = "unknown"
+    UNKNOWN = "unknown"  # Determines ID which is not implemented
     UPDATED = "updated"
     URL = "url"
     USER = "user"

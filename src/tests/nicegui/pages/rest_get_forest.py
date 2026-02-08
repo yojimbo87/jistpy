@@ -1,8 +1,6 @@
 from nicegui import ui
 from jist.utils import Secret
 from jist import JIST
-# from pydantic import TypeAdapter
-# from specs import ForestComponent
 
 
 def rest_get_forest_content() -> None:

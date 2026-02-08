@@ -38,6 +38,7 @@ class StructureColumnKey(str, Enum):
     FORMULA = "formula"
     HANDLE = "handle"
     MAIN = "main"
+    UNKNOWN = "unknown"  # Placeholder value for undetermined column key
 
 
 class StructureColumn(BaseModel):

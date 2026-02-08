@@ -1,4 +1,13 @@
+from enum import Enum
 from pydantic import BaseModel, Field, ConfigDict
+
+
+# https://apidocs.tempo.io/dc-structure/javadoc/structure/latest/com/almworks/jira/structure/api/item/CoreItemTypes.html
+# https://apidocs.tempo.io/dc-structure/javadoc/structure/latest/constant-values.html
+class ForestItemType(str, Enum):
+    FOLDER = "com.almworks.jira.structure:type-folder"
+    GENERATOR = "com.almworks.jira.structure:type-generator"
+    ISSUE = "com.almworks.jira.structure:type-issue"
 
 
 class ForestSpec(BaseModel):

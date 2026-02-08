@@ -5,6 +5,7 @@ from jist.specs import (
     JiraConfig,
     AttributeSpec,
     Structure,
+    StructureColumnKey,
     StructureColumn,
     StructureRow
 )
@@ -111,7 +112,8 @@ class JIST:
 
         # Retrieve structure data
         structure = self.load_structure(structure_id, attribute_specs)
-        # Once structure data is retrieved, copy also column definitions
+        # Once structure data is retrieved and processed into rows, overwrite
+        # column definitions based on data retrieved from view
         structure.columns = structure_columns
 
         return structure
@@ -139,7 +141,18 @@ class JIST:
         # Iterate through responses
         for value_response_item in value_response.responses:
             # Iterate through response data
-            for data_item in value_response_item.data:
+            for i_data_item, data_item in enumerate(value_response_item.data):
+                # Append column definition based on data index as csid and
+                # attribute data retrieved in response
+                structure.columns.append(
+                    StructureColumn(
+                        csid=str(i_data_item),
+                        key=StructureColumnKey.UNKNOWN,
+                        name=data_item.attribute.id,
+                        attribute_spec=data_item.attribute
+                    )
+                )
+
                 # Iterate through values of specific attribute
                 for i_value, value_item in enumerate(data_item.values):
                     # Which row ID is the value for

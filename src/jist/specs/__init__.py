@@ -8,6 +8,7 @@ from .structure_spec import (
     StructureResponse,
     Permission,
     Structure,
+    StructureColumnKey,
     StructureColumn,
     StructureRow
 )
@@ -35,6 +36,7 @@ __all__ = [
     JiraConfig,
     ConfigResponse,
     Structure,
+    StructureColumnKey,
     StructureColumn,
     StructureRow,
     StructureResponse,
