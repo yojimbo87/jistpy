@@ -4,6 +4,7 @@ from jist.specs import (
     AttributeValueFormat,
     JiraConfig,
     AttributeSpec,
+    ItemType,
     Structure,
     StructureColumnKey,
     StructureColumn,
@@ -157,12 +158,33 @@ class JIST:
                 for i_value, value_item in enumerate(data_item.values):
                     # Which row ID is the value for
                     row_id = value_response_item.rows[i_value]
+                    # Get forest component data based on value index
+                    forest_component = forest_response.components[i_value]
+                    # Determine item type
+                    item_type = (
+                        ItemType.ISSUE
+                        if forest_component.issue_id
+                        else ItemType.MISSING
+                    )
+                    item_type_field = str(forest_component.item_type)
+
+                    if (item_type_field in forest_response.item_types):
+                        item_type = ItemType(
+                            forest_response.item_types[item_type_field]
+                        )
+
                     # Get existing or create new row - this needs to be either
                     # created or loaded from existing rows, because row values
                     # are stored for individual attributes/columns
                     structure_row = next(
                         (sr for sr in structure.rows if sr.id == row_id),
-                        StructureRow(id=row_id)
+                        StructureRow(
+                            id=row_id,
+                            depth=forest_component.row_depth,
+                            item_type=item_type,
+                            item_id=forest_component.item_id,
+                            issue_id=forest_component.issue_id
+                        )
                     )
                     is_row_new = (len(structure_row.values) == 0)
 

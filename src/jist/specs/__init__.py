@@ -13,6 +13,7 @@ from .structure_spec import (
     StructureRow
 )
 from .forest_spec import (
+    ItemType,
     ForestSpec,
     ForestComponent,
     ForestResponse
@@ -41,6 +42,7 @@ __all__ = [
     StructureRow,
     StructureResponse,
     Permission,
+    ItemType,
     ForestSpec,
     ForestComponent,
     ForestResponse,

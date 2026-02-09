@@ -16,6 +16,47 @@ def client_load_structure_view_content() -> None:
 
     # Setup web interface
     columns = []
+    columns.append(
+        {
+            'name': "row_id",
+            'label': "Row ID",
+            'field': "row_id",
+            'align': 'left'
+        }
+    )
+    columns.append(
+        {
+            'name': "depth",
+            'label': "Depth",
+            'field': "depth",
+            'align': 'left'
+        }
+    )
+    columns.append(
+        {
+            'name': "item_type",
+            'label': "Item type",
+            'field': "item_type",
+            'align': 'left'
+        }
+    )
+    columns.append(
+        {
+            'name': "item_id",
+            'label': "Item ID",
+            'field': "item_id",
+            'align': 'left'
+        }
+    )
+    columns.append(
+        {
+            'name': "issue_id",
+            'label': "Issue ID",
+            'field': "issue_id",
+            'align': 'left'
+        }
+    )
+
     for column in structure.columns:
         columns.append(
             {
@@ -29,7 +70,11 @@ def client_load_structure_view_content() -> None:
     rows = []
     for structure_row in structure.rows:
         row = {
-            "row_id": structure_row.id
+            "row_id": structure_row.id,
+            "depth": structure_row.depth,
+            "item_type": structure_row.item_type.name,
+            "item_id": structure_row.item_id,
+            "issue_id": structure_row.issue_id
         }
 
         for i_column, column in enumerate(structure.columns):

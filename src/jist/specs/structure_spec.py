@@ -1,5 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel, Field
+from jist.specs.forest_spec import ItemType
 from jist.specs.value_spec import AttributeSpec
 
 
@@ -50,6 +51,10 @@ class StructureColumn(BaseModel):
 
 class StructureRow(BaseModel):
     id: int
+    depth: int
+    item_type: ItemType
+    item_id: str
+    issue_id: int
     # TODO: generic type or any?
     values: list[str] = Field(default=[])
 
