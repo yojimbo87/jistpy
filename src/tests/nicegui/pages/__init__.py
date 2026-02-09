@@ -8,6 +8,7 @@ from .rest_get_view import rest_get_view_content
 from .rest_get_config import rest_get_config_content
 from .client_load_structure import client_load_structure_content
 from .client_load_structure_view import client_load_structure_view_content
+from .client_get_values import client_get_values_content
 
 __all__ = [
     home_content,
@@ -19,5 +20,6 @@ __all__ = [
     rest_get_default_view_content,
     rest_get_view_content,
     client_load_structure_content,
-    client_load_structure_view_content
+    client_load_structure_view_content,
+    client_get_values_content
 ]

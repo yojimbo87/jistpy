@@ -96,6 +96,10 @@ def client_load_structure_content() -> None:
         rows.append(row)
 
     # Setup table
-    ui.table(columns=columns, rows=rows, row_key='row_id')
+    ui.table(
+        columns=columns,
+        rows=rows,
+        row_key='row_id'
+    ).style('width: 1600px')
     # Print count of forest items
     ui.label(f"Items count: {len(structure.rows)}")

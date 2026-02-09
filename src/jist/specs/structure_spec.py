@@ -63,3 +63,21 @@ class Structure(BaseModel):
     id: int
     columns: list[StructureColumn] = Field(default=[])
     rows: list[StructureRow] = Field(default=[])
+
+    def get_values(self, *column_names: str) -> dict[str, list[any]]:
+        data: dict[str, list[any]] = {}
+
+        # Iterate column names argument
+        for column_name in column_names:
+            # Iterate structure columns to find desired column names
+            for i_column, column in enumerate(self.columns):
+                # Find desired column
+                if column.name == column_name:
+                    # Load data into dictionary with column name field
+                    if column_name not in data:
+                        data[column_name] = []
+
+                    for row in self.rows:
+                        data[column_name].append(row.values[i_column])
+
+        return data

@@ -34,6 +34,8 @@ def frame(navigation_title: str):
                         'Load structure view',
                         '/client-load-structure-view'
                     )
+                with ui.item():
+                    ui.link('Get values', '/client-get-values')
 
         with ui.column():
             ui.label(navigation_title)

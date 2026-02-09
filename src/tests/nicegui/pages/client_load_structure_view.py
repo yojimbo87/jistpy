@@ -12,7 +12,7 @@ def client_load_structure_view_content() -> None:
     jist.load_config()
 
     # Retrieve structure data with default view attributes
-    structure = jist.load_structure_view(575)
+    structure = jist.load_structure_view(613)
 
     # Setup web interface
     columns = []
