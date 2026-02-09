@@ -55,10 +55,6 @@ class JIST:
             # Column name can be different than attribute ID
             column_name = ""
 
-            # Load column name from spec if it's present
-            if column_spec.name:
-                column_name = column_spec.name
-
             # Column spec key can determine attribute data and column name
             match column_spec.key:
                 case "main":
@@ -91,6 +87,13 @@ class JIST:
                 case "formula":
                     attribute_id = AttributeId.FORMULA
                     attribute_params = column_spec.params
+
+            # Load column name from spec if it's present
+            if column_spec.name:
+                column_name = column_spec.name
+            # If column name is still empty, set the value to attribute ID
+            elif not column_name:
+                column_name = attribute_id
 
             # Create attribute spec based on previously processed data
             attribute_spec = AttributeSpec(
