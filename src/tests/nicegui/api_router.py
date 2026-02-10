@@ -11,7 +11,7 @@ from pages import (
     rest_get_view_content,
     client_load_structure_content,
     client_load_structure_view_content,
-    client_get_values_content
+    client_get_columns_content
 )
 
 router = APIRouter()
@@ -77,7 +77,7 @@ def load_structure_view_page():
         client_load_structure_view_content()
 
 
-@router.page('/client-get-values')
-def get_values_page():
-    with theme.frame('Client - Get values'):
-        client_get_values_content()
+@router.page('/client-get-columns')
+def get_columns_page():
+    with theme.frame('Client - Get columns'):
+        client_get_columns_content()

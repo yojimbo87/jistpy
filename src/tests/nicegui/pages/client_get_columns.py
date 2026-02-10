@@ -1,22 +1,22 @@
 import polars as pl
 from nicegui import ui
 from jist.utils import Secret
-from jist import JIST
+from jist import JIST, ColumnKey
 
 
-def client_get_values_content() -> None:
+def client_get_columns_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)
 
     # Retrieve structure data
     structure = jist.load_structure_view(613)
-    data = structure.get_values(
+    data = structure.get_columns(
+        ColumnKey.ROW_ID.name,
+        "ROW_ITEM_TYPE",
         "Summaryaa",
         "Status",
-        "Theme labels",
-        include_row_ids=True,
-        include_row_item_types=True
+        "Theme labels"
     )
     df = pl.DataFrame(data=data)
 

@@ -12,7 +12,8 @@ from .specs import (
     AttributeSpec,
     ValueRequestItem,
     ValueRequest,
-    ValueResponse
+    ValueResponse,
+    ColumnKey
 )
 
 __all__ = [
@@ -28,5 +29,6 @@ __all__ = [
     AttributeSpec,
     ValueRequestItem,
     ValueRequest,
-    ValueResponse
+    ValueResponse,
+    ColumnKey
 ]

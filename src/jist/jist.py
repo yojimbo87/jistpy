@@ -183,8 +183,8 @@ class JIST:
                 row_item_ids.append(forest_component.item_id)
                 row_issue_ids.append(forest_component.issue_id)
 
-            structure.columns[ColumnKey.ROW_ID.name] = StructureColumn(
-                id=ColumnKey.ROW_ID.name,
+            structure.columns[ColumnKey.ROW_ID] = StructureColumn(
+                id=ColumnKey.ROW_ID,
                 columns_spec=ColumnSpec(
                     key=ColumnKey.ROW_ID,
                     name=ColumnKey.ROW_ID.name,
@@ -195,8 +195,8 @@ class JIST:
                 values=row_ids
             )
 
-            structure.columns[ColumnKey.ROW_DEPTH.name] = StructureColumn(
-                id=ColumnKey.ROW_DEPTH.name,
+            structure.columns[ColumnKey.ROW_DEPTH] = StructureColumn(
+                id=ColumnKey.ROW_DEPTH,
                 columns_spec=ColumnSpec(
                     key=ColumnKey.ROW_DEPTH,
                     name=ColumnKey.ROW_DEPTH.name,
@@ -207,8 +207,8 @@ class JIST:
                 values=row_depths
             )
 
-            structure.columns[ColumnKey.ROW_ITEM_TYPE.name] = StructureColumn(
-                id=ColumnKey.ROW_ITEM_TYPE.name,
+            structure.columns[ColumnKey.ROW_ITEM_TYPE] = StructureColumn(
+                id=ColumnKey.ROW_ITEM_TYPE,
                 columns_spec=ColumnSpec(
                     key=ColumnKey.ROW_ITEM_TYPE,
                     name=ColumnKey.ROW_ITEM_TYPE.name,
@@ -219,8 +219,8 @@ class JIST:
                 values=row_item_types
             )
 
-            structure.columns[ColumnKey.ROW_ITEM_ID.name] = StructureColumn(
-                id=ColumnKey.ROW_ITEM_ID.name,
+            structure.columns[ColumnKey.ROW_ITEM_ID] = StructureColumn(
+                id=ColumnKey.ROW_ITEM_ID,
                 columns_spec=ColumnSpec(
                     key=ColumnKey.ROW_ITEM_ID,
                     name=ColumnKey.ROW_ITEM_ID.name,
@@ -231,8 +231,8 @@ class JIST:
                 values=row_item_ids
             )
 
-            structure.columns[ColumnKey.ROW_ISSUE_ID.name] = StructureColumn(
-                id=ColumnKey.ROW_ISSUE_ID.name,
+            structure.columns[ColumnKey.ROW_ISSUE_ID] = StructureColumn(
+                id=ColumnKey.ROW_ISSUE_ID,
                 columns_spec=ColumnSpec(
                     key=ColumnKey.ROW_ISSUE_ID,
                     name=ColumnKey.ROW_ISSUE_ID.name,
