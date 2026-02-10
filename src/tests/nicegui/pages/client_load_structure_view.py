@@ -17,12 +17,22 @@ def client_load_structure_view_content() -> None:
 
     data = {}
     columns = []
-    for column in structure.columns:
-        data[column.id] = column.values
+    for column_id, column in structure.columns.items():
+        data[column_id] = column.values
+
+        label = (
+            f"{column.column_spec.name} "
+            f"({column.id}, {column.column_spec.key.name})"
+        )
+        if column.attribute_spec:
+            label += (
+                f", ({column.attribute_spec.id.name}, "
+                f"{column.attribute_spec.format.name})"
+            )
 
         columns.append({
             "name": column.column_spec.name,
-            "label": column.column_spec.name,
+            "label": label,
             "field": column.id,
             "align": "left"
         })

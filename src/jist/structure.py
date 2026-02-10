@@ -20,47 +20,9 @@ class StructureColumn:
 class Structure:
     def __init__(self, id: int):
         self.id: int = id
-        self.columns: list[StructureColumn] = []
-    '''
-    def get_row_definitions(
-            self,
-            include_row_ids=True,
-            include_row_depths=True,
-            include_row_item_types=True,
-            include_row_item_ids=True,
-            include_row_issue_ids=True) -> list[RowDefinition]:
-        row_definitions: list[RowDefinition] = {}
+        self.columns: dict[str, StructureColumn] = {}
 
-        if include_row_ids:
-            row_definitions[ColumnKey.ROW_ID] = []
-        if include_row_depths:
-            row_definitions[ColumnKey.ROW_DEPTH] = []
-        if include_row_item_types:
-            row_definitions[ColumnKey.ROW_ITEM_TYPE] = []
-        if include_row_item_ids:
-            row_definitions[ColumnKey.ROW_ITEM_ID] = []
-        if include_row_issue_ids:
-            row_definitions[ColumnKey.ROW_ISSUE_ID] = []
-
-        for row in self.rows:
-            if include_row_ids:
-                row_definitions[ColumnKey.ROW_ID].append(row.id)
-            if include_row_depths:
-                row_definitions[ColumnKey.ROW_DEPTH].append(row.depth)
-            if include_row_item_types:
-                row_definitions[ColumnKey.ROW_ITEM_TYPE].append(
-                    row.item_type.name
-                )
-            if include_row_item_ids:
-                row_definitions[ColumnKey.ROW_ITEM_ID].append(row.item_id)
-            if include_row_issue_ids:
-                row_definitions[ColumnKey.ROW_ISSUE_ID].append(
-                    row.issue_id
-                )
-
-        return row_definitions
-
-    def get_values(
+    def get_columns(
             self,
             *column_names: str,
             include_row_ids=False,
@@ -99,4 +61,43 @@ class Structure:
                         data[column_name].append(row.values[i_column])
 
         return data
+
+    '''
+    def get_row_definitions(
+            self,
+            include_row_ids=True,
+            include_row_depths=True,
+            include_row_item_types=True,
+            include_row_item_ids=True,
+            include_row_issue_ids=True) -> list[RowDefinition]:
+        row_definitions: list[RowDefinition] = {}
+
+        if include_row_ids:
+            row_definitions[ColumnKey.ROW_ID] = []
+        if include_row_depths:
+            row_definitions[ColumnKey.ROW_DEPTH] = []
+        if include_row_item_types:
+            row_definitions[ColumnKey.ROW_ITEM_TYPE] = []
+        if include_row_item_ids:
+            row_definitions[ColumnKey.ROW_ITEM_ID] = []
+        if include_row_issue_ids:
+            row_definitions[ColumnKey.ROW_ISSUE_ID] = []
+
+        for row in self.rows:
+            if include_row_ids:
+                row_definitions[ColumnKey.ROW_ID].append(row.id)
+            if include_row_depths:
+                row_definitions[ColumnKey.ROW_DEPTH].append(row.depth)
+            if include_row_item_types:
+                row_definitions[ColumnKey.ROW_ITEM_TYPE].append(
+                    row.item_type.name
+                )
+            if include_row_item_ids:
+                row_definitions[ColumnKey.ROW_ITEM_ID].append(row.item_id)
+            if include_row_issue_ids:
+                row_definitions[ColumnKey.ROW_ISSUE_ID].append(
+                    row.issue_id
+                )
+
+        return row_definitions
     '''

@@ -28,9 +28,27 @@ def client_load_structure_content() -> None:
     structure = jist.load_structure(613, attribute_specs)
 
     data = {}
-    for column in structure.columns:
-        data[column.id] = column.values
+    columns = []
+    for column_id, column in structure.columns.items():
+        data[column_id] = column.values
+
+        label = (
+            f"{column.column_spec.name} "
+            f"({column.id}, {column.column_spec.key.name})"
+        )
+        if column.attribute_spec:
+            label += (
+                f", ({column.attribute_spec.id.name}, "
+                f"{column.attribute_spec.format.name})"
+            )
+
+        columns.append({
+            "name": column.column_spec.name,
+            "label": label,
+            "field": column.id,
+            "align": "left"
+        })
     df = pl.DataFrame(data=data)
 
     # Setup web interface
-    ui.table.from_polars(df).style('width: 1600px')
+    ui.table.from_polars(df, columns=columns).style('width: 1600px')

@@ -41,11 +41,11 @@ class JIST:
         if (apply_config and self.jira_config is None):
             self.load_config()
 
-        attribute_specs: list[AttributeSpec] = []
-        column_specs: list[ColumnSpec] = []
+        attribute_specs: dict[str, AttributeSpec] = {}
+        column_specs: dict[str, ColumnSpec] = {}
 
         # Create list of attribute specs for retrieval of structure data
-        for column_spec in view_response.spec.columns:
+        for i, column_spec in enumerate(view_response.spec.columns):
             # By default attribute ID is unknown before parsing
             attribute_id = AttributeId.UNKNOWN
             # TODO: for now default format is set to retrieve text
@@ -56,9 +56,11 @@ class JIST:
 
             # Column spec key can determine attribute data and column name
             match column_spec.key:
+                case ColumnKey.HANDLE:
+                    # Handle key should? represent column with issue key
+                    attribute_id = AttributeId.KEY
                 case ColumnKey.MAIN:
-                    # Main key represents column which should always be item
-                    # summary field
+                    # Main key should? represetn column with item summary/name
                     attribute_id = AttributeId.SUMMARY
                 case ColumnKey.FIELD:
                     # Get field name from column spec
@@ -100,26 +102,29 @@ class JIST:
                 format=attribute_format,
                 params=attribute_params
             )
+
+            column_id = str(i)
             # Add attribute spec which will be sent in the request
-            attribute_specs.append(attribute_spec)
+            attribute_specs[column_id] = attribute_spec
             # Create and add new column spec
-            column_specs.append(
-                ColumnSpec(
-                    csid=column_spec.csid,
-                    key=column_spec.key,
-                    name=column_name,
-                    params=column_spec.params
-                )
+            column_specs[column_id] = ColumnSpec(
+                csid=column_spec.csid,
+                key=column_spec.key,
+                name=column_name,
+                params=column_spec.params
             )
 
         # Retrieve structure data
-        structure = self.load_structure(structure_id, attribute_specs)
+        structure = self.load_structure(
+            structure_id,
+            [v for k, v in attribute_specs.items()]
+        )
 
-        # Copy column spec from view to column data
-        for i_column, column in enumerate(structure.columns):
-            if column.id == str(i_column):
-                column.column_spec = column_specs[i_column]
-                column.attribute_spec = attribute_spec[i_column]
+        # Copy column and attribute specs from view to column data
+        for column_id, column in structure.columns.items():
+            if column_id in column_specs:
+                column.column_spec = column_specs[column_id]
+                column.attribute_spec = attribute_specs[column_id]
 
         return structure
 
@@ -178,90 +183,79 @@ class JIST:
                 row_item_ids.append(forest_component.item_id)
                 row_issue_ids.append(forest_component.issue_id)
 
-            structure.columns.append(
-                StructureColumn(
-                    id=ColumnKey.ROW_ID.name,
-                    columns_spec=ColumnSpec(
-                        key=ColumnKey.ROW_ID,
-                        name=ColumnKey.ROW_ID.name,
-                        csid=ColumnKey.ROW_ID.name,
-                        params={}
-                    ),
-                    attribute_spec=None,
-                    values=row_ids
-                )
+            structure.columns[ColumnKey.ROW_ID.name] = StructureColumn(
+                id=ColumnKey.ROW_ID.name,
+                columns_spec=ColumnSpec(
+                    key=ColumnKey.ROW_ID,
+                    name=ColumnKey.ROW_ID.name,
+                    csid=ColumnKey.ROW_ID.name,
+                    params={}
+                ),
+                attribute_spec=None,
+                values=row_ids
             )
 
-            structure.columns.append(
-                StructureColumn(
-                    id=ColumnKey.ROW_DEPTH.name,
-                    columns_spec=ColumnSpec(
-                        key=ColumnKey.ROW_DEPTH,
-                        name=ColumnKey.ROW_DEPTH.name,
-                        csid=ColumnKey.ROW_DEPTH.name,
-                        params={}
-                    ),
-                    attribute_spec=None,
-                    values=row_depths
-                )
+            structure.columns[ColumnKey.ROW_DEPTH.name] = StructureColumn(
+                id=ColumnKey.ROW_DEPTH.name,
+                columns_spec=ColumnSpec(
+                    key=ColumnKey.ROW_DEPTH,
+                    name=ColumnKey.ROW_DEPTH.name,
+                    csid=ColumnKey.ROW_DEPTH.name,
+                    params={}
+                ),
+                attribute_spec=None,
+                values=row_depths
             )
 
-            structure.columns.append(
-                StructureColumn(
-                    id=ColumnKey.ROW_ITEM_TYPE.name,
-                    columns_spec=ColumnSpec(
-                        key=ColumnKey.ROW_ITEM_TYPE,
-                        name=ColumnKey.ROW_ITEM_TYPE.name,
-                        csid=ColumnKey.ROW_ITEM_TYPE.name,
-                        params={}
-                    ),
-                    attribute_spec=None,
-                    values=row_item_types
-                )
+            structure.columns[ColumnKey.ROW_ITEM_TYPE.name] = StructureColumn(
+                id=ColumnKey.ROW_ITEM_TYPE.name,
+                columns_spec=ColumnSpec(
+                    key=ColumnKey.ROW_ITEM_TYPE,
+                    name=ColumnKey.ROW_ITEM_TYPE.name,
+                    csid=ColumnKey.ROW_ITEM_TYPE.name,
+                    params={}
+                ),
+                attribute_spec=None,
+                values=row_item_types
             )
 
-            structure.columns.append(
-                StructureColumn(
-                    id=ColumnKey.ROW_ITEM_ID.name,
-                    columns_spec=ColumnSpec(
-                        key=ColumnKey.ROW_ITEM_ID,
-                        name=ColumnKey.ROW_ITEM_ID.name,
-                        csid=ColumnKey.ROW_ITEM_ID.name,
-                        params={}
-                    ),
-                    attribute_spec=None,
-                    values=row_item_ids
-                )
+            structure.columns[ColumnKey.ROW_ITEM_ID.name] = StructureColumn(
+                id=ColumnKey.ROW_ITEM_ID.name,
+                columns_spec=ColumnSpec(
+                    key=ColumnKey.ROW_ITEM_ID,
+                    name=ColumnKey.ROW_ITEM_ID.name,
+                    csid=ColumnKey.ROW_ITEM_ID.name,
+                    params={}
+                ),
+                attribute_spec=None,
+                values=row_item_ids
             )
 
-            structure.columns.append(
-                StructureColumn(
-                    id=ColumnKey.ROW_ISSUE_ID.name,
-                    columns_spec=ColumnSpec(
-                        key=ColumnKey.ROW_ISSUE_ID,
-                        name=ColumnKey.ROW_ISSUE_ID.name,
-                        csid=ColumnKey.ROW_ISSUE_ID.name,
-                        params={}
-                    ),
-                    attribute_spec=None,
-                    values=row_issue_ids
-                )
+            structure.columns[ColumnKey.ROW_ISSUE_ID.name] = StructureColumn(
+                id=ColumnKey.ROW_ISSUE_ID.name,
+                columns_spec=ColumnSpec(
+                    key=ColumnKey.ROW_ISSUE_ID,
+                    name=ColumnKey.ROW_ISSUE_ID.name,
+                    csid=ColumnKey.ROW_ISSUE_ID.name,
+                    params={}
+                ),
+                attribute_spec=None,
+                values=row_issue_ids
             )
 
             # Iterate through attributes from response
             for i_data_item, data_item in enumerate(value_response_item.data):
-                structure.columns.append(
-                    StructureColumn(
-                        id=str(i_data_item),
-                        columns_spec=ColumnSpec(
-                            key=ColumnKey.UNKNOWN,
-                            name=data_item.attribute.id,
-                            csid=str(i_data_item),
-                            params={}
-                        ),
-                        attribute_spec=data_item.attribute,
-                        values=data_item.values
-                    )
+                column_id = str(i_data_item)
+                structure.columns[column_id] = StructureColumn(
+                    id=str(i_data_item),
+                    columns_spec=ColumnSpec(
+                        key=ColumnKey.UNKNOWN,
+                        name=data_item.attribute.id,
+                        csid=str(i_data_item),
+                        params={}
+                    ),
+                    attribute_spec=data_item.attribute,
+                    values=data_item.values
                 )
 
         return structure
