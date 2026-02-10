@@ -3,14 +3,9 @@ from .config_spec import (
     JiraConfig,
     ConfigResponse
 )
-
 from .structure_spec import (
-    StructureResponse,
     Permission,
-    Structure,
-    StructureColumnKey,
-    StructureColumn,
-    StructureRow
+    StructureResponse
 )
 from .forest_spec import (
     ItemType,
@@ -27,6 +22,7 @@ from .value_spec import (
     ValueResponse
 )
 from .view_spec import (
+    ColumnKey,
     ColumnSpec,
     ViewSpec,
     ViewResponse
@@ -36,12 +32,10 @@ __all__ = [
     JiraField,
     JiraConfig,
     ConfigResponse,
-    Structure,
-    StructureColumnKey,
-    StructureColumn,
-    StructureRow,
-    StructureResponse,
     Permission,
+    StructureResponse,
+    ColumnKey,
+    ColumnSpec,
     ItemType,
     ForestSpec,
     ForestComponent,

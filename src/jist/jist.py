@@ -1,3 +1,4 @@
+from .structure import StructureColumn, Structure
 import jist.utils.http_service as http
 from jist.specs import (
     AttributeId,
@@ -5,10 +6,8 @@ from jist.specs import (
     JiraConfig,
     AttributeSpec,
     ItemType,
-    Structure,
-    StructureColumnKey,
-    StructureColumn,
-    StructureRow
+    ColumnKey,
+    ColumnSpec
 )
 from jist.rest_resources import rest_api
 
@@ -43,7 +42,7 @@ class JIST:
             self.load_config()
 
         attribute_specs: list[AttributeSpec] = []
-        structure_columns: list[StructureColumn] = []
+        column_specs: list[ColumnSpec] = []
 
         # Create list of attribute specs for retrieval of structure data
         for column_spec in view_response.spec.columns:
@@ -57,11 +56,11 @@ class JIST:
 
             # Column spec key can determine attribute data and column name
             match column_spec.key:
-                case "main":
+                case ColumnKey.MAIN:
                     # Main key represents column which should always be item
                     # summary field
                     attribute_id = AttributeId.SUMMARY
-                case "field":
+                case ColumnKey.FIELD:
                     # Get field name from column spec
                     field: str = column_spec.params["field"]
 
@@ -84,7 +83,7 @@ class JIST:
                             ),
                             column_spec.name
                         )
-                case "formula":
+                case ColumnKey.FORMULA:
                     attribute_id = AttributeId.FORMULA
                     attribute_params = column_spec.params
 
@@ -101,30 +100,33 @@ class JIST:
                 format=attribute_format,
                 params=attribute_params
             )
-            # Add to the list of attribute specs to be sent in request
+            # Add attribute spec which will be sent in the request
             attribute_specs.append(attribute_spec)
-            # Add to the list of columns to know which row value belongs to
-            # which column - nth row value corresponds to nth column definition
-            structure_columns.append(
-                StructureColumn(
+            # Create and add new column spec
+            column_specs.append(
+                ColumnSpec(
                     csid=column_spec.csid,
                     key=column_spec.key,
                     name=column_name,
-                    attribute_spec=attribute_spec
+                    params=column_spec.params
                 )
             )
 
         # Retrieve structure data
         structure = self.load_structure(structure_id, attribute_specs)
-        # Once structure data is retrieved and processed into rows, overwrite
-        # column definitions based on data retrieved from view
-        structure.columns = structure_columns
+
+        # Copy column spec from view to column data
+        for i_column, column in enumerate(structure.columns):
+            if column.id == str(i_column):
+                column.column_spec = column_specs[i_column]
+                column.attribute_spec = attribute_spec[i_column]
 
         return structure
 
     # Loads structure data for specified attributes
     def load_structure(
-            self, structure_id: int,
+            self,
+            structure_id: int,
             attribute_specs: list[AttributeSpec]) -> Structure:
         # Load forest data
         forest_response = self.rest_api.get_forest(structure_id=structure_id)
@@ -144,57 +146,122 @@ class JIST:
 
         # Iterate through responses
         for value_response_item in value_response.responses:
-            # Iterate through response data
+            # Create separate data columns for row metedata
+            row_ids: list[int] = []
+            row_depths: list[int] = []
+            row_item_types: list[ItemType] = []
+            row_item_ids: list[str] = []
+            row_issue_ids: list[int] = []
+
+            # Load row definition data into dedicated data columns by
+            # iterating through individual row IDs
+            for i_row, row_id in enumerate(value_response_item.rows):
+                # Get forest component data based on row ID index
+                forest_component = forest_response.components[i_row]
+                # Determine item type
+                item_type = (
+                    ItemType.ISSUE
+                    if forest_component.issue_id
+                    else ItemType.MISSING
+                )
+                item_type_field = str(forest_component.item_type)
+
+                if (item_type_field in forest_response.item_types):
+                    item_type = ItemType(
+                        forest_response.item_types[item_type_field]
+                    )
+
+                # Store individual row metadata into dedicated data columns
+                row_ids.append(row_id)
+                row_depths.append(forest_component.row_depth)
+                row_item_types.append(item_type.name)
+                row_item_ids.append(forest_component.item_id)
+                row_issue_ids.append(forest_component.issue_id)
+
+            structure.columns.append(
+                StructureColumn(
+                    id=ColumnKey.ROW_ID.name,
+                    columns_spec=ColumnSpec(
+                        key=ColumnKey.ROW_ID,
+                        name=ColumnKey.ROW_ID.name,
+                        csid=ColumnKey.ROW_ID.name,
+                        params={}
+                    ),
+                    attribute_spec=None,
+                    values=row_ids
+                )
+            )
+
+            structure.columns.append(
+                StructureColumn(
+                    id=ColumnKey.ROW_DEPTH.name,
+                    columns_spec=ColumnSpec(
+                        key=ColumnKey.ROW_DEPTH,
+                        name=ColumnKey.ROW_DEPTH.name,
+                        csid=ColumnKey.ROW_DEPTH.name,
+                        params={}
+                    ),
+                    attribute_spec=None,
+                    values=row_depths
+                )
+            )
+
+            structure.columns.append(
+                StructureColumn(
+                    id=ColumnKey.ROW_ITEM_TYPE.name,
+                    columns_spec=ColumnSpec(
+                        key=ColumnKey.ROW_ITEM_TYPE,
+                        name=ColumnKey.ROW_ITEM_TYPE.name,
+                        csid=ColumnKey.ROW_ITEM_TYPE.name,
+                        params={}
+                    ),
+                    attribute_spec=None,
+                    values=row_item_types
+                )
+            )
+
+            structure.columns.append(
+                StructureColumn(
+                    id=ColumnKey.ROW_ITEM_ID.name,
+                    columns_spec=ColumnSpec(
+                        key=ColumnKey.ROW_ITEM_ID,
+                        name=ColumnKey.ROW_ITEM_ID.name,
+                        csid=ColumnKey.ROW_ITEM_ID.name,
+                        params={}
+                    ),
+                    attribute_spec=None,
+                    values=row_item_ids
+                )
+            )
+
+            structure.columns.append(
+                StructureColumn(
+                    id=ColumnKey.ROW_ISSUE_ID.name,
+                    columns_spec=ColumnSpec(
+                        key=ColumnKey.ROW_ISSUE_ID,
+                        name=ColumnKey.ROW_ISSUE_ID.name,
+                        csid=ColumnKey.ROW_ISSUE_ID.name,
+                        params={}
+                    ),
+                    attribute_spec=None,
+                    values=row_issue_ids
+                )
+            )
+
+            # Iterate through attributes from response
             for i_data_item, data_item in enumerate(value_response_item.data):
-                # Append column definition based on data index as csid and
-                # attribute data retrieved in response
                 structure.columns.append(
                     StructureColumn(
-                        csid=str(i_data_item),
-                        key=StructureColumnKey.UNKNOWN,
-                        name=data_item.attribute.id,
-                        attribute_spec=data_item.attribute
+                        id=str(i_data_item),
+                        columns_spec=ColumnSpec(
+                            key=ColumnKey.UNKNOWN,
+                            name=data_item.attribute.id,
+                            csid=str(i_data_item),
+                            params={}
+                        ),
+                        attribute_spec=data_item.attribute,
+                        values=data_item.values
                     )
                 )
-
-                # Iterate through values of specific attribute
-                for i_value, value_item in enumerate(data_item.values):
-                    # Which row ID is the value for
-                    row_id = value_response_item.rows[i_value]
-                    # Get forest component data based on value index
-                    forest_component = forest_response.components[i_value]
-                    # Determine item type
-                    item_type = (
-                        ItemType.ISSUE
-                        if forest_component.issue_id
-                        else ItemType.MISSING
-                    )
-                    item_type_field = str(forest_component.item_type)
-
-                    if (item_type_field in forest_response.item_types):
-                        item_type = ItemType(
-                            forest_response.item_types[item_type_field]
-                        )
-
-                    # Get existing or create new row - this needs to be either
-                    # created or loaded from existing rows, because row values
-                    # are stored for individual attributes/columns
-                    structure_row = next(
-                        (sr for sr in structure.rows if sr.id == row_id),
-                        StructureRow(
-                            id=row_id,
-                            depth=forest_component.row_depth,
-                            item_type=item_type,
-                            item_id=forest_component.item_id,
-                            issue_id=forest_component.issue_id
-                        )
-                    )
-                    is_row_new = (len(structure_row.values) == 0)
-
-                    # Add row value
-                    structure_row.values.append(value_item)
-                    # Add row if it's not present yet
-                    if is_row_new:
-                        structure.rows.append(structure_row)
 
         return structure

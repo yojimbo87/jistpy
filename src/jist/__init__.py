@@ -1,9 +1,9 @@
 from .jist import JIST
+from .structure import StructureColumn, Structure
 from .rest_resources import (
     rest_api
 )
 from .specs import (
-    Structure,
     StructureResponse,
     ForestSpec,
     ForestResponse,
@@ -17,8 +17,9 @@ from .specs import (
 
 __all__ = [
     JIST,
-    rest_api,
+    StructureColumn,
     Structure,
+    rest_api,
     StructureResponse,
     ForestSpec,
     ForestResponse,

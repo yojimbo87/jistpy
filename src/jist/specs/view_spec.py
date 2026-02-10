@@ -1,11 +1,26 @@
+from enum import Enum
 from pydantic import BaseModel, Field
+
+
+class ColumnKey(str, Enum):
+    ROW_ID = "__row_id"  # Library internal
+    ROW_DEPTH = "__row_depth"  # Library internal
+    ROW_ITEM_TYPE = "__row_item_type"  # Library internal
+    ROW_ITEM_ID = "__row_item_id"  # Library internal
+    ROW_ISSUE_ID = "__row_issue_id"  # Library internal
+    ACTIONS = "actions"
+    FIELD = "field"
+    FORMULA = "formula"
+    HANDLE = "handle"
+    MAIN = "main"
+    UNKNOWN = "unknown"  # Placeholder value for undetermined column key
 
 
 class ColumnSpec(BaseModel):
     # Mandatory property that defines the class of the column, its behavior.
     # As of Structure 2.0, there's a predefined set of supported column keys.
     # In the future, we plan to make it expandable.
-    key: str
+    key: ColumnKey
 
     # Optional property that defines the header of the column in the grid. If
     # not set, default header is used as decided by the column class.
