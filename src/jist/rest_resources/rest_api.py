@@ -3,7 +3,8 @@ from jist.rest_resources import (
     structure_resource,
     forest_resource,
     value_resource,
-    view_resource
+    view_resource,
+    attribute_resource
 )
 from jist.specs import (
     ConfigResponse,
@@ -14,7 +15,9 @@ from jist.specs import (
     ValueRequestItem,
     ValueRequest,
     ValueResponse,
-    ViewResponse
+    ViewResponse,
+    SubscriptionWindow,
+    SubscriptionData
 )
 
 
@@ -43,9 +46,10 @@ def get_forest(structure_id: int) -> ForestResponse:
 
 
 def get_value(
-        structure_id: int,
-        rows: list[int],
-        attributes: list[AttributeSpec]) -> ValueResponse:
+    structure_id: int,
+    rows: list[int],
+    attributes: list[AttributeSpec]
+) -> ValueResponse:
     request = ValueRequest(
         requests=[
             ValueRequestItem(
@@ -69,5 +73,26 @@ def get_default_view(structure_id: int) -> ViewResponse:
 
 def get_view(view_id: int) -> ViewResponse:
     response = view_resource.get_view(view_id)
+
+    return response
+
+
+def create_subscription(
+    structure_id: int,
+    rows: list[int],
+    attributes: list[AttributeSpec],
+    values_update: bool = False,
+    values_timeout: int = 1000
+) -> SubscriptionData:
+    subscription_window = SubscriptionWindow(
+        forestSpec=ForestSpec(structureId=structure_id),
+        rows=rows,
+        attributes=attributes
+    )
+    response = attribute_resource.create_subscription(
+        values_update=values_update,
+        values_timeout=values_timeout,
+        subscription_window=subscription_window
+    )
 
     return response

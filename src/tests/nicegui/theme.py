@@ -24,6 +24,11 @@ def frame(navigation_title: str):
                     ui.link('Get default view', '/rest-get-default-view')
                 with ui.item():
                     ui.link('Get view', '/rest-get-view')
+                with ui.item():
+                    ui.link(
+                        'Attribute subscription',
+                        '/rest-attribute-subscription'
+                    )
 
             ui.label("Client API:")
             with ui.list():

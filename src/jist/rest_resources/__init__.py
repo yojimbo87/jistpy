@@ -5,7 +5,8 @@ from .rest_api import (
     get_forest,
     get_value,
     get_default_view,
-    get_view
+    get_view,
+    create_subscription,
 )
 
 __all__ = [
@@ -15,5 +16,6 @@ __all__ = [
     get_forest,
     get_value,
     get_default_view,
-    get_view
+    get_view,
+    create_subscription
 ]

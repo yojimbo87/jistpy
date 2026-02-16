@@ -1,7 +1,7 @@
 from enum import Enum
 import json
 from pydantic import BaseModel, Field, ConfigDict
-from jist.specs.forest_spec import ForestSpec
+from jist.specs import ForestSpec
 
 
 class AttributeId(str, Enum):

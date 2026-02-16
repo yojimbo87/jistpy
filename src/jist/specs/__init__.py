@@ -9,6 +9,7 @@ from .structure_spec import (
 )
 from .forest_spec import (
     ItemType,
+    Version,
     ForestSpec,
     ForestComponent,
     ForestResponse
@@ -16,6 +17,7 @@ from .forest_spec import (
 from .value_spec import (
     AttributeId,
     AttributeValueFormat,
+    AttributeData,
     AttributeSpec,
     ValueRequest,
     ValueRequestItem,
@@ -28,6 +30,12 @@ from .view_spec import (
     ViewResponse
 )
 
+from .attribute_spec import (
+    SubscriptionWindow,
+    SubscriptionData,
+    SubscriptionUpdate
+)
+
 __all__ = [
     JiraField,
     JiraConfig,
@@ -37,16 +45,21 @@ __all__ = [
     ColumnKey,
     ColumnSpec,
     ItemType,
+    Version,
     ForestSpec,
     ForestComponent,
     ForestResponse,
     AttributeId,
     AttributeValueFormat,
+    AttributeData,
     AttributeSpec,
     ValueRequest,
     ValueRequestItem,
     ValueResponse,
     ColumnSpec,
     ViewSpec,
-    ViewResponse
+    ViewResponse,
+    SubscriptionWindow,
+    SubscriptionData,
+    SubscriptionUpdate
 ]
