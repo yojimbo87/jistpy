@@ -8,6 +8,8 @@ class ColumnKey(str, Enum):
     ROW_ITEM_TYPE = "__row_item_type"  # Library internal
     ROW_ITEM_ID = "__row_item_id"  # Library internal
     ROW_ISSUE_ID = "__row_issue_id"  # Library internal
+    KEY = "key"
+    SUMMARY = "Summary"
     ACTIONS = "actions"
     FIELD = "field"
     FORMULA = "formula"

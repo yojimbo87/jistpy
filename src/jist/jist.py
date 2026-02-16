@@ -62,6 +62,7 @@ class JIST:
                 case ColumnKey.MAIN:
                     # Main key should? represetn column with item summary/name
                     attribute_id = AttributeId.SUMMARY
+                    column_name = "Summary"
                 case ColumnKey.FIELD:
                     # Get field name from column spec
                     field: str = column_spec.params["field"]
@@ -187,8 +188,8 @@ class JIST:
                 id=ColumnKey.ROW_ID,
                 columns_spec=ColumnSpec(
                     key=ColumnKey.ROW_ID,
-                    name=ColumnKey.ROW_ID.name,
-                    csid=ColumnKey.ROW_ID.name,
+                    name=ColumnKey.ROW_ID,
+                    csid=ColumnKey.ROW_ID,
                     params={}
                 ),
                 attribute_spec=None,
@@ -199,8 +200,8 @@ class JIST:
                 id=ColumnKey.ROW_DEPTH,
                 columns_spec=ColumnSpec(
                     key=ColumnKey.ROW_DEPTH,
-                    name=ColumnKey.ROW_DEPTH.name,
-                    csid=ColumnKey.ROW_DEPTH.name,
+                    name=ColumnKey.ROW_DEPTH,
+                    csid=ColumnKey.ROW_DEPTH,
                     params={}
                 ),
                 attribute_spec=None,
@@ -211,8 +212,8 @@ class JIST:
                 id=ColumnKey.ROW_ITEM_TYPE,
                 columns_spec=ColumnSpec(
                     key=ColumnKey.ROW_ITEM_TYPE,
-                    name=ColumnKey.ROW_ITEM_TYPE.name,
-                    csid=ColumnKey.ROW_ITEM_TYPE.name,
+                    name=ColumnKey.ROW_ITEM_TYPE,
+                    csid=ColumnKey.ROW_ITEM_TYPE,
                     params={}
                 ),
                 attribute_spec=None,
@@ -223,8 +224,8 @@ class JIST:
                 id=ColumnKey.ROW_ITEM_ID,
                 columns_spec=ColumnSpec(
                     key=ColumnKey.ROW_ITEM_ID,
-                    name=ColumnKey.ROW_ITEM_ID.name,
-                    csid=ColumnKey.ROW_ITEM_ID.name,
+                    name=ColumnKey.ROW_ITEM_ID,
+                    csid=ColumnKey.ROW_ITEM_ID,
                     params={}
                 ),
                 attribute_spec=None,
@@ -235,8 +236,8 @@ class JIST:
                 id=ColumnKey.ROW_ISSUE_ID,
                 columns_spec=ColumnSpec(
                     key=ColumnKey.ROW_ISSUE_ID,
-                    name=ColumnKey.ROW_ISSUE_ID.name,
-                    csid=ColumnKey.ROW_ISSUE_ID.name,
+                    name=ColumnKey.ROW_ISSUE_ID,
+                    csid=ColumnKey.ROW_ISSUE_ID,
                     params={}
                 ),
                 attribute_spec=None,

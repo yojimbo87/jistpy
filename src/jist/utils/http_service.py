@@ -8,6 +8,7 @@ headers = {
     "Cache-Control": "no-cache"
     # "X-Atlassian-Token": "no-check"
 }
+request_retry_count = 5
 
 
 def init(hostname: str, username: str, password: str) -> None:
