@@ -96,3 +96,23 @@ def create_subscription(
     )
 
     return response
+
+
+def poll_subscription(
+    subscription_id: int,
+    signature: int,
+    version: int,
+    values_update: bool = False,
+    values_timeout: int = 1000,
+    skip_loading: bool = False
+) -> SubscriptionData:
+    response = attribute_resource.poll_subscription(
+        subscription_id=subscription_id,
+        signature=signature,
+        version=version,
+        values_update=values_update,
+        values_timeout=values_timeout,
+        skip_loading=skip_loading
+    )
+
+    return response

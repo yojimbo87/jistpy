@@ -39,6 +39,6 @@ class SubscriptionUpdate(BaseModel):
 class SubscriptionData(BaseModel):
     id: int
     window: SubscriptionWindow
-    values_upate: SubscriptionUpdate = Field(alias="valuesUpdate")
+    values_update: SubscriptionUpdate = Field(alias="valuesUpdate")
 
     model_config = ConfigDict(serialize_by_alias=True, populate_by_name=True)
