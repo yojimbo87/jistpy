@@ -7,6 +7,8 @@ from .rest_api import (
     get_default_view,
     get_view,
     create_subscription,
+    poll_subscription,
+    delete_subscription
 )
 
 __all__ = [
@@ -17,5 +19,7 @@ __all__ = [
     get_value,
     get_default_view,
     get_view,
-    create_subscription
+    create_subscription,
+    poll_subscription,
+    delete_subscription
 ]

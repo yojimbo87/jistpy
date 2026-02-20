@@ -1,4 +1,9 @@
-from requests import get as rget, post as rpost, Response
+from requests import (
+    get as rget,
+    post as rpost,
+    delete as rdelete,
+    Response
+)
 
 host = ""
 credentials = ("", "")
@@ -35,6 +40,16 @@ def post(endpoint: str, data: str) -> Response:
         headers=headers,
         auth=credentials,
         data=data
+    )
+
+    return response
+
+
+def delete(endpoint: str) -> Response:
+    response = rdelete(
+        host + endpoint,
+        headers=headers,
+        auth=credentials
     )
 
     return response

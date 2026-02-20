@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import partial
 from nicegui import ui, run
 from jist.utils import Secret
@@ -52,6 +53,15 @@ def rest_attribute_subscription_content() -> None:
         )
     )
 
+    ui.button(
+        "Delete subscription",
+        on_click=partial(
+            handle_delete_subscription,
+            jist,
+            create_subscription_data.id,
+        )
+    )
+
 
 async def handle_poll_subscription(
     jist: JIST,
@@ -70,6 +80,30 @@ async def handle_poll_subscription(
         skip_loading
     )
 
+    ui.label(
+        f"Requesting poll subscription {subscription_data.id} on"
+        f" {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
+    )
+
     ui.code(
         poll_subscription_data.model_dump_json(indent=2)
+    ).style('width: 800px')
+
+
+async def handle_delete_subscription(
+    jist: JIST,
+    subscription_id: int
+):
+    is_successful = await run.io_bound(
+        jist.rest_api.delete_subscription,
+        subscription_id
+    )
+
+    ui.label(
+        f"Requesting delete subscription {subscription_id} on"
+        f" {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
+    )
+
+    ui.code(
+        f"Was delete subscription successful: {is_successful}"
     ).style('width: 800px')

@@ -49,3 +49,16 @@ def poll_subscription(
     )
 
     return validated_data
+
+
+def delete_subscription(subscription_id: int) -> bool:
+    response = http.delete(
+        f"rest/structure/2.0/attribute/subscription/{subscription_id}"
+    )
+    is_successful = False
+
+    match response.status_code:
+        case 200:
+            is_successful = True
+
+    return is_successful

@@ -116,3 +116,9 @@ def poll_subscription(
     )
 
     return response
+
+
+def delete_subscription(subscription_id: int) -> bool:
+    response = attribute_resource.delete_subscription(subscription_id)
+
+    return response
