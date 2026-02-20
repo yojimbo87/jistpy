@@ -1,3 +1,4 @@
+from ..jist_operation import JistOperation
 from jist.rest_resources import (
     config_resource,
     structure_resource,
@@ -83,19 +84,18 @@ def create_subscription(
     attributes: list[AttributeSpec],
     values_update: bool = False,
     values_timeout: int = 1000
-) -> SubscriptionData:
+) -> JistOperation[SubscriptionData]:
     subscription_window = SubscriptionWindow(
         forestSpec=ForestSpec(structureId=structure_id),
         rows=rows,
         attributes=attributes
     )
-    response = attribute_resource.create_subscription(
+
+    return attribute_resource.create_subscription(
         values_update=values_update,
         values_timeout=values_timeout,
         subscription_window=subscription_window
     )
-
-    return response
 
 
 def poll_subscription(
@@ -105,8 +105,8 @@ def poll_subscription(
     values_update: bool = False,
     values_timeout: int = 1000,
     skip_loading: bool = False
-) -> SubscriptionData:
-    response = attribute_resource.poll_subscription(
+) -> JistOperation[SubscriptionData]:
+    return attribute_resource.poll_subscription(
         subscription_id=subscription_id,
         signature=signature,
         version=version,
@@ -115,10 +115,6 @@ def poll_subscription(
         skip_loading=skip_loading
     )
 
-    return response
 
-
-def delete_subscription(subscription_id: int) -> bool:
-    response = attribute_resource.delete_subscription(subscription_id)
-
-    return response
+def delete_subscription(subscription_id: int) -> JistOperation[bool]:
+    return attribute_resource.delete_subscription(subscription_id)

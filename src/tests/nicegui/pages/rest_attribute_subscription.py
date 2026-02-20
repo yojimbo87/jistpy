@@ -1,5 +1,6 @@
 from datetime import datetime
 from functools import partial
+import json
 from nicegui import ui, run
 from jist.utils import Secret
 from jist import JIST
@@ -20,7 +21,7 @@ def rest_attribute_subscription_content() -> None:
     skip_loading = False
 
     # Retrieve value data
-    create_subscription_data = jist.rest_api.create_subscription(
+    create_operation = jist.rest_api.create_subscription(
         structure_id=613,
         rows=[809240, 83425],
         attributes=[
@@ -37,16 +38,21 @@ def rest_attribute_subscription_content() -> None:
         values_timeout=values_timeout
     )
 
-    ui.code(
-        create_subscription_data.model_dump_json(indent=2)
-    ).style('width: 800px')
+    create_result = (
+        #json.dumps(create_operation.content, indent=2)
+        create_operation.content.model_dump_json(indent=2)
+        if create_operation.is_success
+        else create_operation.error.message
+    )
+
+    ui.code(create_result).style('width: 800px')
 
     ui.button(
         "Poll subscription",
         on_click=partial(
             handle_poll_subscription,
             jist,
-            create_subscription_data,
+            create_operation.content,
             values_update,
             values_timeout,
             skip_loading
@@ -58,7 +64,7 @@ def rest_attribute_subscription_content() -> None:
         on_click=partial(
             handle_delete_subscription,
             jist,
-            create_subscription_data.id,
+            create_operation.content.id,
         )
     )
 
@@ -70,7 +76,12 @@ async def handle_poll_subscription(
     values_timeout: int,
     skip_loading: bool
 ):
-    poll_subscription_data = await run.io_bound(
+    ui.label(
+        f"Requesting poll subscription {subscription_data.id} on"
+        f" {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
+    )
+
+    poll_operation = await run.io_bound(
         jist.rest_api.poll_subscription,
         subscription_data.id,
         subscription_data.values_update.version.signature,
@@ -80,30 +91,35 @@ async def handle_poll_subscription(
         skip_loading
     )
 
-    ui.label(
-        f"Requesting poll subscription {subscription_data.id} on"
-        f" {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
+    poll_result = (
+        poll_operation.content.model_dump_json(indent=2)
+        if poll_operation.is_success
+        else poll_operation.error.message
     )
 
-    ui.code(
-        poll_subscription_data.model_dump_json(indent=2)
-    ).style('width: 800px')
+    ui.code(poll_result).style('width: 800px')
 
 
 async def handle_delete_subscription(
     jist: JIST,
     subscription_id: int
 ):
-    is_successful = await run.io_bound(
-        jist.rest_api.delete_subscription,
-        subscription_id
-    )
-
     ui.label(
         f"Requesting delete subscription {subscription_id} on"
         f" {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
     )
 
+    delete_operation = await run.io_bound(
+        jist.rest_api.delete_subscription,
+        subscription_id
+    )
+
+    delete_result = (
+        delete_operation.content
+        if delete_operation.is_success
+        else delete_operation.error.message
+    )
+
     ui.code(
-        f"Was delete subscription successful: {is_successful}"
+        f"Result of delete subscription: {delete_result}"
     ).style('width: 800px')

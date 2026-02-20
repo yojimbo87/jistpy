@@ -1,4 +1,4 @@
-from pydantic import TypeAdapter
+from jist.jist_operation import JistOperation
 from jist.specs import SubscriptionWindow, SubscriptionData
 from jist.utils import http_service as http
 
@@ -7,7 +7,7 @@ def create_subscription(
     subscription_window: SubscriptionWindow,
     values_update: bool = False,
     values_timeout: int = 1000
-) -> SubscriptionData:
+) -> JistOperation[SubscriptionData]:
     request_json_data = subscription_window.model_dump_json(exclude_none=True)
     response = http.post(
         (
@@ -17,12 +17,8 @@ def create_subscription(
         ),
         request_json_data
     )
-    json_data = response.json()
-    validated_data = TypeAdapter(SubscriptionData).validate_python(
-        json_data
-    )
 
-    return validated_data
+    return JistOperation[SubscriptionData](response)
 
 
 def poll_subscription(
@@ -32,7 +28,7 @@ def poll_subscription(
     values_update: bool = False,
     values_timeout: int = 1000,
     skip_loading: bool = False
-) -> SubscriptionData:
+) -> JistOperation[SubscriptionData]:
     response = http.get(
         (
             f"rest/structure/2.0/attribute/subscription/{subscription_id}"
@@ -43,22 +39,13 @@ def poll_subscription(
             f"&skipLoading={skip_loading}"
         )
     )
-    json_data = response.json()
-    validated_data = TypeAdapter(SubscriptionData).validate_python(
-        json_data
-    )
 
-    return validated_data
+    return JistOperation[SubscriptionData](response)
 
 
-def delete_subscription(subscription_id: int) -> bool:
+def delete_subscription(subscription_id: int) -> JistOperation[bool]:
     response = http.delete(
         f"rest/structure/2.0/attribute/subscription/{subscription_id}"
     )
-    is_successful = False
-
-    match response.status_code:
-        case 200:
-            is_successful = True
-
-    return is_successful
+    
+    return JistOperation[bool](response)
