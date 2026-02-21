@@ -1,6 +1,5 @@
 from datetime import datetime
 from functools import partial
-import json
 from nicegui import ui, run
 from jist.utils import Secret
 from jist import JIST
@@ -39,7 +38,6 @@ def rest_attribute_subscription_content() -> None:
     )
 
     create_result = (
-        #json.dumps(create_operation.content, indent=2)
         create_operation.content.model_dump_json(indent=2)
         if create_operation.is_success
         else create_operation.error.message
