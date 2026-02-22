@@ -6,18 +6,57 @@ from jist import JIST
 from jist.specs import (
     AttributeSpec,
     AttributeId,
-    AttributeValueFormat,
-    SubscriptionData
+    AttributeValueFormat
 )
 
 
 def rest_attribute_subscription_content() -> None:
+    global label_element
+    global code_element
+    global jist
+    global values_update
+    global values_timeout
+    global skip_loading
+    global subscription_data
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(secret.hostname, secret.username, secret.password)
     values_update = True
     values_timeout = 500
     skip_loading = False
+
+    ui.button(
+        "Create subscription",
+        on_click=partial(
+            handle_create_subscription
+        )
+    )
+
+    ui.button(
+        "Poll subscription",
+        on_click=partial(
+            handle_poll_subscription
+        )
+    )
+
+    ui.button(
+        "Delete subscription",
+        on_click=partial(
+            handle_delete_subscription
+        )
+    )
+
+    label_element = ui.label("Initializing...")
+    code_element = ui.code("Initializing...").style('width: 800px')
+
+
+async def handle_create_subscription():
+    global subscription_data
+
+    label_element.text = (
+        f"Requesting create subscription on"
+        f" {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
+    )
 
     # Retrieve value data
     create_operation = jist.rest_api.create_subscription(
@@ -43,38 +82,14 @@ def rest_attribute_subscription_content() -> None:
         else create_operation.error.message
     )
 
-    ui.code(create_result).style('width: 800px')
-
-    ui.button(
-        "Poll subscription",
-        on_click=partial(
-            handle_poll_subscription,
-            jist,
-            create_operation.content,
-            values_update,
-            values_timeout,
-            skip_loading
-        )
-    )
-
-    ui.button(
-        "Delete subscription",
-        on_click=partial(
-            handle_delete_subscription,
-            jist,
-            create_operation.content.id,
-        )
-    )
+    subscription_data = create_operation.content
+    code_element.content = create_result
 
 
-async def handle_poll_subscription(
-    jist: JIST,
-    subscription_data: SubscriptionData,
-    values_update: bool,
-    values_timeout: int,
-    skip_loading: bool
-):
-    ui.label(
+async def handle_poll_subscription():
+    global subscription_data
+
+    label_element.text = (
         f"Requesting poll subscription {subscription_data.id} on"
         f" {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
     )
@@ -95,21 +110,19 @@ async def handle_poll_subscription(
         else poll_operation.error.message
     )
 
-    ui.code(poll_result).style('width: 800px')
+    subscription_data = poll_operation.content
+    code_element.content = poll_result
 
 
-async def handle_delete_subscription(
-    jist: JIST,
-    subscription_id: int
-):
-    ui.label(
-        f"Requesting delete subscription {subscription_id} on"
+async def handle_delete_subscription():
+    label_element.text = (
+        f"Requesting delete subscription {subscription_data.id} on"
         f" {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}"
     )
 
     delete_operation = await run.io_bound(
         jist.rest_api.delete_subscription,
-        subscription_id
+        subscription_data.id
     )
 
     delete_result = (
@@ -118,6 +131,4 @@ async def handle_delete_subscription(
         else delete_operation.error.message
     )
 
-    ui.code(
-        f"Result of delete subscription: {delete_result}"
-    ).style('width: 800px')
+    code_element.content = f"Result of delete subscription: {delete_result}"
