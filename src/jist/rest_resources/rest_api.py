@@ -57,16 +57,12 @@ def get_value(
     return value_resource.get_value(request)
 
 
-def get_default_view(structure_id: int) -> ViewResponse:
-    response = view_resource.get_default_view(structure_id)
-
-    return response
+def get_default_view(structure_id: int) -> JistOperation[ViewResponse]:
+    return view_resource.get_default_view(structure_id)
 
 
-def get_view(view_id: int) -> ViewResponse:
-    response = view_resource.get_view(view_id)
-
-    return response
+def get_view(view_id: int) -> JistOperation[ViewResponse]:
+    return view_resource.get_view(view_id)
 
 
 def create_subscription(

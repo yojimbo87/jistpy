@@ -1,22 +1,49 @@
 from pydantic import TypeAdapter
+from jist.jist_operation import JistOperation, JistError
 from jist.specs import ViewResponse
 from jist.utils import http_service as http
 
 
-def get_default_view(structure_id: int) -> ViewResponse:
-    url_base = "rest/structure/1.0/view/default"
-    url_query_string = f"?forPage=structure&forStructure={structure_id}"
+def get_default_view(structure_id: int) -> JistOperation[ViewResponse]:
+    response = http.get(
+        (
+            f"rest/structure/1.0/view/default"
+            f"?forPage=structure&forStructure={structure_id}"
+        )
+    )
+    operation = JistOperation[ViewResponse](response.status_code)
+    response_json_data = http.to_json(response)
 
-    response = http.get(f"{url_base}{url_query_string}")
-    json_data = response.json()
-    validated_data = TypeAdapter(ViewResponse).validate_python(json_data)
+    match response.status_code:
+        case 200:
+            operation.content = TypeAdapter(
+                ViewResponse
+            ).validate_python(
+                response_json_data
+            )
+        case _:
+            operation.error = TypeAdapter(JistError).validate_python(
+                response_json_data
+            )
 
-    return validated_data
+    return operation
 
 
-def get_view(view_id: int) -> ViewResponse:
+def get_view(view_id: int) -> JistOperation[ViewResponse]:
     response = http.get(f"rest/structure/1.0/view/{view_id}")
-    json_data = response.json()
-    validated_data = TypeAdapter(ViewResponse).validate_python(json_data)
+    operation = JistOperation[ViewResponse](response.status_code)
+    response_json_data = http.to_json(response)
 
-    return validated_data
+    match response.status_code:
+        case 200:
+            operation.content = TypeAdapter(
+                ViewResponse
+            ).validate_python(
+                response_json_data
+            )
+        case _:
+            operation.error = TypeAdapter(JistError).validate_python(
+                response_json_data
+            )
+
+    return operation

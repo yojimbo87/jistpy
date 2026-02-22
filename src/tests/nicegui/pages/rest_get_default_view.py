@@ -9,8 +9,13 @@ def rest_get_default_view_content() -> None:
     jist = JIST(secret.hostname, secret.username, secret.password)
 
     # Retrieve view data
-    data = jist.rest_api.get_default_view(613)
-    pretty_json = data.model_dump_json(indent=2)
+    operation = jist.rest_api.get_default_view(613)
+    
+    operation_result = (
+        operation.content.model_dump_json(indent=2)
+        if operation.is_success
+        else operation.error.message
+    )
 
     # Setup web interface
-    ui.code(pretty_json).style('width: 800px')
+    ui.code(operation_result).style('width: 800px')
