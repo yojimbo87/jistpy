@@ -19,17 +19,18 @@ def create_subscription(
         request_json_data
     )
 
-    operation = JistOperation[SubscriptionData]()
+    operation = JistOperation[SubscriptionData](response.status_code)
+    response_json_data = http.parse_json_content(response)
 
     match response.status_code:
         case 200:
-            json_data = response.json()
-
             operation.content = TypeAdapter(SubscriptionData).validate_python(
-                json_data
+                response_json_data
             )
         case _:
-            operation.error = JistError(response)
+            operation.error = TypeAdapter(JistError).validate_python(
+                response_json_data
+            )
 
     return operation
 
@@ -53,17 +54,18 @@ def poll_subscription(
         )
     )
 
-    operation = JistOperation[SubscriptionData]()
+    operation = JistOperation[SubscriptionData](response.status_code)
+    response_json_data = http.parse_json_content(response)
 
     match response.status_code:
         case 200:
-            json_data = response.json()
-
             operation.content = TypeAdapter(SubscriptionData).validate_python(
-                json_data
+                response_json_data
             )
         case _:
-            operation.error = JistError(response)
+            operation.error = TypeAdapter(JistError).validate_python(
+                response_json_data
+            )
 
     return operation
 
@@ -73,12 +75,15 @@ def delete_subscription(subscription_id: int) -> JistOperation[bool]:
         f"rest/structure/2.0/attribute/subscription/{subscription_id}"
     )
 
-    operation = JistOperation[bool]()
+    operation = JistOperation[bool](response.status_code)
 
     match response.status_code:
         case 200:
             operation.content = True
         case _:
-            operation.error = JistError(response)
+            response_json_data = http.parse_json_content(response)
+            operation.error = TypeAdapter(JistError).validate_python(
+                response_json_data
+            )
 
     return operation

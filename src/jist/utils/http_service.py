@@ -53,3 +53,11 @@ def delete(endpoint: str) -> Response:
     )
 
     return response
+
+
+def parse_json_content(response: Response) -> str:
+    return (
+        response.json()
+        if len(response.text) > 0
+        else None
+    )
