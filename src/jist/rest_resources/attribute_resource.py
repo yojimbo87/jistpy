@@ -18,7 +18,6 @@ def create_subscription(
         ),
         request_json_data
     )
-
     operation = JistOperation[SubscriptionData](response.status_code)
     response_json_data = http.parse_json_content(response)
 
@@ -53,7 +52,6 @@ def poll_subscription(
             f"&skipLoading={skip_loading}"
         )
     )
-
     operation = JistOperation[SubscriptionData](response.status_code)
     response_json_data = http.parse_json_content(response)
 
@@ -74,7 +72,6 @@ def delete_subscription(subscription_id: int) -> JistOperation[bool]:
     response = http.delete(
         f"rest/structure/2.0/attribute/subscription/{subscription_id}"
     )
-
     operation = JistOperation[bool](response.status_code)
 
     match response.status_code:

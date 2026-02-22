@@ -1,4 +1,4 @@
-from ..jist_operation import JistOperation
+from jist.jist_operation import JistOperation
 from jist.rest_resources import (
     config_resource,
     structure_resource,
@@ -22,10 +22,8 @@ from jist.specs import (
 )
 
 
-def get_config() -> ConfigResponse:
-    response = config_resource.get_config()
-
-    return response
+def get_config() -> JistOperation[ConfigResponse]:
+    return config_resource.get_config()
 
 
 def get_structures() -> list[StructureResponse]:
