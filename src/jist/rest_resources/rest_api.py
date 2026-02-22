@@ -38,10 +38,8 @@ def get_structure(structure_id: int) -> StructureResponse:
     return response
 
 
-def get_forest(structure_id: int) -> ForestResponse:
-    response = forest_resource.get_forest(structure_id)
-
-    return response
+def get_forest(structure_id: int) -> JistOperation[ForestResponse]:
+    return forest_resource.get_forest(structure_id)
 
 
 def get_value(
