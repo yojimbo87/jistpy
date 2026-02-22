@@ -10,8 +10,13 @@ def client_get_columns_content() -> None:
     jist = JIST(secret.hostname, secret.username, secret.password)
 
     # Retrieve structure data
-    structure = jist.load_structure_view(575)
-    data = structure.get_columns(
+    operation = jist.load_structure_view(575)
+
+    if operation.is_success is False:
+        ui.code(operation.error.message).style('width: 800px')
+        return
+
+    data = operation.content.get_columns(
         ColumnKey.ROW_DEPTH,
         "__row_item_type",
         ColumnKey.KEY,

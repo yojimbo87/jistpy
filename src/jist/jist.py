@@ -7,9 +7,11 @@ from jist.specs import (
     AttributeSpec,
     ItemType,
     ColumnKey,
-    ColumnSpec
+    ColumnSpec,
+    ConfigResponse
 )
 from jist.rest_resources import rest_api
+from jist.jist_operation import JistOperation
 
 
 class JIST:
@@ -19,33 +21,49 @@ class JIST:
         self.rest_api: rest_api = rest_api
         self.jira_config: JiraConfig = None
 
-    def load_config(self) -> None:
-        config_response = self.rest_api.get_config()
+    def load_config(self) -> JistOperation[ConfigResponse]:
+        config_operation = self.rest_api.get_config()
+
+        if config_operation.is_success is False:
+            return config_operation
 
         self.jira_config = JiraConfig(
-            structure_version=config_response.structure_version,
-            jira_version=config_response.jira_version
+            structure_version=config_operation.content.structure_version,
+            jira_version=config_operation.content.jira_version
         )
 
-        for jira_field in config_response.jira_fields:
+        for jira_field in config_operation.content.jira_fields:
             self.jira_config.fields[jira_field.id] = jira_field
+
+        return config_operation
 
     # Loads structure data with default view attributes
     def load_structure_view(
             self,
             structure_id: int,
-            apply_config: bool = True) -> Structure:
-        view_response = self.rest_api.get_default_view(structure_id)
+            apply_config: bool = True) -> JistOperation[Structure]:
+        operation = JistOperation[Structure](status_code=0)
+        view_operation = self.rest_api.get_default_view(structure_id)
+
+        if view_operation.is_success is False:
+            operation.status_code = view_operation.status_code
+            operation.error = view_operation.error
+            return operation
 
         # Check whether we should use config
         if (apply_config and self.jira_config is None):
-            self.load_config()
+            config_operation = self.load_config()
+
+            if config_operation.is_success is False:
+                operation.status_code = config_operation.status_code
+                operation.error = config_operation.error
+                return operation
 
         attribute_specs: dict[str, AttributeSpec] = {}
         column_specs: dict[str, ColumnSpec] = {}
 
         # Create list of attribute specs for retrieval of structure data
-        for i, column_spec in enumerate(view_response.spec.columns):
+        for i, column_spec in enumerate(view_operation.content.spec.columns):
             # By default attribute ID is unknown before parsing
             attribute_id = AttributeId.UNKNOWN
             # TODO: for now default format is set to retrieve text
@@ -116,42 +134,58 @@ class JIST:
             )
 
         # Retrieve structure data
-        structure = self.load_structure(
+        operation = self.load_structure(
             structure_id,
             [v for k, v in attribute_specs.items()]
         )
 
+        if operation.is_success is False:
+            return operation
+
         # Copy column and attribute specs from view to column data
-        for column_id, column in structure.columns.items():
+        for column_id, column in operation.content.columns.items():
             if column_id in column_specs:
                 column.column_spec = column_specs[column_id]
                 column.attribute_spec = attribute_specs[column_id]
 
-        return structure
+        return operation
 
     # Loads structure data for specified attributes
     def load_structure(
             self,
             structure_id: int,
-            attribute_specs: list[AttributeSpec]) -> Structure:
+            attribute_specs: list[AttributeSpec]) -> JistOperation[Structure]:
+        operation = JistOperation[Structure](status_code=0)
         # Load forest data
-        forest_response = self.rest_api.get_forest(structure_id=structure_id)
+        forest_operation = self.rest_api.get_forest(structure_id=structure_id)
+
+        if forest_operation.is_success is False:
+            operation.status_code = forest_operation.status_code
+            operation.error = forest_operation.error
+            return operation
+
         # Get row IDs from forest components
         row_ids = [
             component.row_id
-            for component in forest_response.components
+            for component in forest_operation.content.components
         ]
         # Load forest values
-        value_response = self.rest_api.get_value(
-            forest_response.spec.structure_id,
+        value_operation = self.rest_api.get_value(
+            forest_operation.content.spec.structure_id,
             row_ids,
             attribute_specs
         )
+
+        if value_operation.is_success is False:
+            operation.status_code = value_operation.status_code
+            operation.error = value_operation.error
+            return operation
+
         # Create new structure object into which will be data stored
         structure = Structure(id=structure_id)
 
         # Iterate through responses
-        for value_response_item in value_response.responses:
+        for value_response_item in value_operation.content.responses:
             # Create separate data columns for row metedata
             row_ids: list[int] = []
             row_depths: list[int] = []
@@ -163,7 +197,7 @@ class JIST:
             # iterating through individual row IDs
             for i_row, row_id in enumerate(value_response_item.rows):
                 # Get forest component data based on row ID index
-                forest_component = forest_response.components[i_row]
+                forest_component = forest_operation.content.components[i_row]
                 # Determine item type
                 item_type = (
                     ItemType.ISSUE
@@ -172,9 +206,9 @@ class JIST:
                 )
                 item_type_field = str(forest_component.item_type)
 
-                if (item_type_field in forest_response.item_types):
+                if (item_type_field in forest_operation.content.item_types):
                     item_type = ItemType(
-                        forest_response.item_types[item_type_field]
+                        forest_operation.content.item_types[item_type_field]
                     )
 
                 # Store individual row metadata into dedicated data columns
@@ -259,4 +293,6 @@ class JIST:
                     values=data_item.values
                 )
 
-        return structure
+        operation.content = structure
+
+        return operation

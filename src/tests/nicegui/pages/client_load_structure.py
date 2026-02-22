@@ -25,11 +25,15 @@ def client_load_structure_content() -> None:
     ]
 
     # Retrieve structure data with specified attributes
-    structure = jist.load_structure(613, attribute_specs)
+    operation = jist.load_structure(613, attribute_specs)
+
+    if operation.is_success is False:
+        ui.code(operation.error.message).style('width: 800px')
+        return
 
     data = {}
     columns = []
-    for column_id, column in structure.columns.items():
+    for column_id, column in operation.content.columns.items():
         data[column_id] = column.values
 
         label = (

@@ -10,7 +10,7 @@ def rest_get_default_view_content() -> None:
 
     # Retrieve view data
     operation = jist.rest_api.get_default_view(613)
-    
+
     operation_result = (
         operation.content.model_dump_json(indent=2)
         if operation.is_success

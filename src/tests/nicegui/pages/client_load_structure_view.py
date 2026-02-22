@@ -10,14 +10,22 @@ def client_load_structure_view_content() -> None:
     jist = JIST(secret.hostname, secret.username, secret.password)
 
     # Retrieve config (widget)
-    jist.load_config()
+    config_operation = jist.load_config()
+
+    if config_operation.is_success is False:
+        ui.code(config_operation.error.message).style('width: 800px')
+        return
 
     # Retrieve structure data with default view attributes
-    structure = jist.load_structure_view(575)
+    operation = jist.load_structure_view(575)
+
+    if operation.is_success is False:
+        ui.code(operation.error.message).style('width: 800px')
+        return
 
     data = {}
     columns = []
-    for column_id, column in structure.columns.items():
+    for column_id, column in operation.content.columns.items():
         data[column_id] = column.values
 
         label = (
