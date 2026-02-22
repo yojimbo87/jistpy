@@ -5,7 +5,8 @@ from .config_spec import (
 )
 from .structure_spec import (
     Permission,
-    StructureResponse
+    StructureResponse,
+    StructuresResponse
 )
 from .forest_spec import (
     ItemType,
@@ -42,6 +43,7 @@ __all__ = [
     ConfigResponse,
     Permission,
     StructureResponse,
+    StructuresResponse,
     ColumnKey,
     ColumnSpec,
     ItemType,

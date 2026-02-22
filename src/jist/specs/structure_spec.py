@@ -28,3 +28,7 @@ class StructureResponse(BaseModel):
     )
     owner: str = Field(default=None)
     permissions: list[Permission] = Field(default=None)
+
+
+class StructuresResponse(BaseModel):
+    structures: list[StructureResponse]

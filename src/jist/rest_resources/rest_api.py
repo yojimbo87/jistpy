@@ -10,6 +10,7 @@ from jist.rest_resources import (
 from jist.specs import (
     ConfigResponse,
     StructureResponse,
+    StructuresResponse,
     ForestSpec,
     ForestResponse,
     AttributeSpec,
@@ -26,16 +27,12 @@ def get_config() -> JistOperation[ConfigResponse]:
     return config_resource.get_config()
 
 
-def get_structures() -> list[StructureResponse]:
-    response = structure_resource.get_structures()
-
-    return response
+def get_structures() -> JistOperation[StructuresResponse]:
+    return structure_resource.get_structures()
 
 
-def get_structure(structure_id: int) -> StructureResponse:
-    response = structure_resource.get_structure(structure_id)
-
-    return response
+def get_structure(structure_id: int) -> JistOperation[StructureResponse]:
+    return structure_resource.get_structure(structure_id)
 
 
 def get_forest(structure_id: int) -> JistOperation[ForestResponse]:

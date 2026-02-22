@@ -9,8 +9,13 @@ def rest_get_structure_content() -> None:
     jist = JIST(secret.hostname, secret.username, secret.password)
 
     # Retrieve structure data
-    data = jist.rest_api.get_structure(600)
-    pretty_json = data.model_dump_json(indent=2)
+    operation = jist.rest_api.get_structure(600)
+
+    operation_result = (
+        operation.content.model_dump_json(indent=2)
+        if operation.is_success
+        else operation.error.message
+    )
 
     # Setup web interface
-    ui.code(pretty_json).style('width: 800px')
+    ui.code(operation_result).style('width: 800px')

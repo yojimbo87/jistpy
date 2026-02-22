@@ -1,7 +1,6 @@
-from pydantic import TypeAdapter
 from nicegui import ui
 from jist.utils import Secret
-from jist import JIST, StructureResponse
+from jist import JIST
 
 
 def rest_get_structures_content() -> None:
@@ -10,11 +9,13 @@ def rest_get_structures_content() -> None:
     jist = JIST(secret.hostname, secret.username, secret.password)
 
     # Retrieve structures
-    data = jist.rest_api.get_structures()
+    operation = jist.rest_api.get_structures()
 
-    # Parse list of structures into pretty json string
-    ta = TypeAdapter(list[StructureResponse])
-    pretty_json = ta.dump_json(data, indent=2).decode()
+    operation_result = (
+        operation.content.model_dump_json(indent=2)
+        if operation.is_success
+        else operation.error.message
+    )
 
     # Setup web interface
-    ui.code(pretty_json).style('width: 800px')
+    ui.code(operation_result).style('width: 800px')
