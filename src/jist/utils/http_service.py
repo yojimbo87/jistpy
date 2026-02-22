@@ -55,7 +55,7 @@ def delete(endpoint: str) -> Response:
     return response
 
 
-def parse_json_content(response: Response) -> any:
+def to_json(response: Response) -> any:
     return (
         response.json()
         if len(response.text) > 0

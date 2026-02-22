@@ -7,7 +7,7 @@ from jist.utils import http_service as http
 def get_structures() -> JistOperation[StructuresResponse]:
     response = http.get("rest/structure/2.0/structure")
     operation = JistOperation[list[StructureResponse]](response.status_code)
-    response_json_data = http.parse_json_content(response)
+    response_json_data = http.to_json(response)
 
     match response.status_code:
         case 200:
@@ -27,7 +27,7 @@ def get_structures() -> JistOperation[StructuresResponse]:
 def get_structure(structure_id: int) -> JistOperation[StructureResponse]:
     response = http.get(f"rest/structure/2.0/structure/{structure_id}")
     operation = JistOperation[StructureResponse](response.status_code)
-    response_json_data = http.parse_json_content(response)
+    response_json_data = http.to_json(response)
 
     match response.status_code:
         case 200:

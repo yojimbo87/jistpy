@@ -7,7 +7,7 @@ from jist.utils import http_service as http
 def get_config() -> JistOperation[ConfigResponse]:
     response = http.get("rest/structure/1.0/config/widget")
     operation = JistOperation[ConfigResponse](response.status_code)
-    response_json_data = http.parse_json_content(response)
+    response_json_data = http.to_json(response)
 
     match response.status_code:
         case 200:

@@ -19,7 +19,7 @@ def create_subscription(
         request_json_data
     )
     operation = JistOperation[SubscriptionData](response.status_code)
-    response_json_data = http.parse_json_content(response)
+    response_json_data = http.to_json(response)
 
     match response.status_code:
         case 200:
@@ -53,7 +53,7 @@ def poll_subscription(
         )
     )
     operation = JistOperation[SubscriptionData](response.status_code)
-    response_json_data = http.parse_json_content(response)
+    response_json_data = http.to_json(response)
 
     match response.status_code:
         case 200:
@@ -78,7 +78,7 @@ def delete_subscription(subscription_id: int) -> JistOperation[bool]:
         case 200:
             operation.content = True
         case _:
-            response_json_data = http.parse_json_content(response)
+            response_json_data = http.to_json(response)
             operation.error = TypeAdapter(JistError).validate_python(
                 response_json_data
             )

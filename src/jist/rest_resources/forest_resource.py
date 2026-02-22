@@ -9,7 +9,7 @@ def get_forest(structure_id: int) -> JistOperation[ForestResponse]:
     request_json_data = forest_spec.model_dump_json()
     response = http.post("rest/structure/2.0/forest/latest", request_json_data)
     operation = JistOperation[ForestResponse](response.status_code)
-    response_json_data = http.parse_json_content(response)
+    response_json_data = http.to_json(response)
 
     match response.status_code:
         case 200:
