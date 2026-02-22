@@ -10,7 +10,7 @@ def rest_get_value_content() -> None:
     jist = JIST(secret.hostname, secret.username, secret.password)
 
     # Retrieve value data
-    data = jist.rest_api.get_value(
+    operation = jist.rest_api.get_value(
         600,
         [807094, 807096, 807086, 9993, 9999, 10023],
         [
@@ -21,4 +21,11 @@ def rest_get_value_content() -> None:
         ]
     )
 
-    ui.code(data.model_dump_json(indent=2)).style('width: 800px')
+    operation_result = (
+        operation.content.model_dump_json(indent=2)
+        if operation.is_success
+        else operation.error.message
+    )
+
+    # Setup web interface
+    ui.code(operation_result).style('width: 800px')

@@ -43,7 +43,7 @@ def get_value(
     structure_id: int,
     rows: list[int],
     attributes: list[AttributeSpec]
-) -> ValueResponse:
+) -> JistOperation[ValueResponse]:
     request = ValueRequest(
         requests=[
             ValueRequestItem(
@@ -54,9 +54,7 @@ def get_value(
         ]
     )
 
-    response = value_resource.get_value(request)
-
-    return response
+    return value_resource.get_value(request)
 
 
 def get_default_view(structure_id: int) -> ViewResponse:
