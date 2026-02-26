@@ -1,6 +1,7 @@
 from .structure import StructureColumn, Structure
 import jist.utils.http_service as http
 from jist.specs import (
+    PatResponse,
     AttributeId,
     AttributeValueFormat,
     JiraConfig,
@@ -16,10 +17,26 @@ from jist.jist_operation import JistOperation
 
 class JIST:
     def __init__(self, host: str, username: str, password: str):
+        # TODO: get rid of username and password
         http.init(host, username, password)
 
         self.rest_api: rest_api = rest_api
         self.jira_config: JiraConfig = None
+
+    def authenticate(
+            self,
+            username: str,
+            password: str) -> JistOperation[PatResponse]:
+        token_operation = self.rest_api.get_token(
+            username,
+            password,
+            http.pat_expiration_duration
+        )
+
+        if token_operation.is_success:
+            http.pat_token = token_operation.content.token
+
+        return token_operation
 
     def load_config(self) -> JistOperation[ConfigResponse]:
         config_operation = self.rest_api.get_config()

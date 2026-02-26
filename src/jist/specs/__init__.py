@@ -1,3 +1,7 @@
+from .pat_spec import (
+    PatRequest,
+    PatResponse
+)
 from .config_spec import (
     JiraField,
     JiraConfig,
@@ -30,7 +34,6 @@ from .view_spec import (
     ViewSpec,
     ViewResponse
 )
-
 from .attribute_spec import (
     SubscriptionWindow,
     SubscriptionData,
@@ -38,6 +41,8 @@ from .attribute_spec import (
 )
 
 __all__ = [
+    PatRequest,
+    PatResponse,
     JiraField,
     JiraConfig,
     ConfigResponse,

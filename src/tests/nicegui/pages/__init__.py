@@ -1,4 +1,5 @@
 from .home import home_content
+from .rest_get_token import rest_get_token_content
 from .rest_get_structures import rest_get_structures_content
 from .rest_get_structure import rest_get_structure_content
 from .rest_get_forest import rest_get_forest_content
@@ -13,6 +14,7 @@ from .client_get_columns import client_get_columns_content
 
 __all__ = [
     home_content,
+    rest_get_token_content,
     rest_get_config_content,
     rest_get_structures_content,
     rest_get_structure_content,

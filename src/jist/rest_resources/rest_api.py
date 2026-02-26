@@ -1,5 +1,6 @@
 from jist.jist_operation import JistOperation
 from jist.rest_resources import (
+    pat_resource,
     config_resource,
     structure_resource,
     forest_resource,
@@ -8,6 +9,7 @@ from jist.rest_resources import (
     attribute_resource
 )
 from jist.specs import (
+    PatResponse,
     ConfigResponse,
     StructureResponse,
     StructuresResponse,
@@ -21,6 +23,17 @@ from jist.specs import (
     SubscriptionWindow,
     SubscriptionData
 )
+
+
+def get_token(
+        username: str,
+        password: str,
+        token_expiration_duration: int) -> JistOperation[PatResponse]:
+    return pat_resource.get_token(
+        username,
+        password,
+        token_expiration_duration
+    )
 
 
 def get_config() -> JistOperation[ConfigResponse]:

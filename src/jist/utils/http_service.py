@@ -7,6 +7,8 @@ from requests import (
 
 host = ""
 credentials = ("", "")
+pat_token = ""
+pat_expiration_duration = 1
 headers = {
     "Accept": "application/json",
     "Content-Type": "application/json",
@@ -34,11 +36,18 @@ def get(endpoint: str) -> Response:
     return response
 
 
-def post(endpoint: str, data: str) -> Response:
+def post(
+        endpoint: str,
+        data: str,
+        pat_token: str = None,
+        credentials: tuple[str, str] = None) -> Response:
+    if pat_token:
+        headers["Authorization"] = f"Bearer {pat_token}"
+
     response = rpost(
         host + endpoint,
         headers=headers,
-        auth=credentials,
+        auth=credentials if credentials else None,
         data=data
     )
 
