@@ -34,7 +34,7 @@ class JIST:
         )
 
         if token_operation.is_success:
-            http.pat_token = token_operation.content.token
+            http.pat_token = token_operation.content.raw_token
 
         return token_operation
 

@@ -20,15 +20,14 @@ def get_token(
         credentials=(username, password)
     )
     operation = JistOperation[PatResponse](response.status_code)
+    response_json_data = http.to_json(response)
 
     match response.status_code:
         case 201:
-            operation.content = PatResponse(
-                token_name=token_name,
-                token=response.text
+            operation.content = TypeAdapter(PatResponse).validate_python(
+                response_json_data
             )
         case _:
-            response_json_data = http.to_json(response)
             operation.error = TypeAdapter(JistError).validate_python(
                 response_json_data
             )
