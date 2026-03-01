@@ -1,4 +1,4 @@
-from jist.specs import AuthenticationMode
+from ..authentication_mode import AuthenticationMode
 from requests import (
     get as rget,
     post as rpost,
@@ -6,11 +6,12 @@ from requests import (
     Response
 )
 
-is_authenticated = False
+jira_authentication_mode: AuthenticationMode = None
 jira_hostname: str = None
 jira_credentials: tuple[str, str] = None
 jira_pat: str = None
 jira_pat_expiration_duration = 90
+# So far only used during value retrieval to retry long running jobs
 request_retry_count = 5
 headers = {
     "Accept": "application/json",
@@ -26,17 +27,18 @@ def init(
         password: str = None,
         pat: str = None,
         pat_expiration_duration: int = 90,
-        authetntication_mode=AuthenticationMode.PAT) -> None:
+        authentication_mode=AuthenticationMode.PAT) -> None:
     global jira_hostname
     global jira_credentials
     global jira_pat
     global jira_pat_expiration_duration
 
     jira_hostname = hostname
+    jira_authentication_mode = authentication_mode
     jira_pat_expiration_duration = pat_expiration_duration
 
     # Handle selected authentication mode
-    match authetntication_mode:
+    match jira_authentication_mode:
         # https://developer.atlassian.com/server/jira/platform/personal-access-token/
         case AuthenticationMode.PAT:
             # If PAT token is supplied, it can be applied

@@ -5,7 +5,7 @@ from jist.specs.pat_spec import PatRequest, PatResponse
 from jist.utils import http_service as http
 
 
-def get_pat() -> JistOperation[PatResponse]:
+def get_pat(username: str, password: str) -> JistOperation[PatResponse]:
     # Create token name from jistpy prefix and uuid hex string
     token_name = f"jistpy-{uuid.uuid4().hex}"
     # Create request json object
@@ -13,14 +13,16 @@ def get_pat() -> JistOperation[PatResponse]:
         name=token_name,
         expiration_duration=http.jira_pat_expiration_duration
     ).model_dump_json()
-
-    # TODO: request needs to use credentials in order to retrieve valid PAT
-
+    # Temporarily setup credentials to authenticate token request
+    http.jira_credentials = (username, password)
     # Send request
     response = http.post(
         "/rest/pat/latest/tokens",
         request_json_data
     )
+    # Reset credentials after token request has been sent
+    http.jira_credentials = None
+    # Process request result
     operation = JistOperation[PatResponse](response.status_code)
     response_json_data = http.to_json(response)
 

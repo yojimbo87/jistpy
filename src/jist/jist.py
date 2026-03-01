@@ -1,7 +1,7 @@
+from .authentication_mode import AuthenticationMode
 from .structure import StructureColumn, Structure
 import jist.utils.http_service as http
 from jist.specs import (
-    AuthenticationMode,
     PatResponse,
     AttributeId,
     AttributeValueFormat,
@@ -37,7 +37,7 @@ class JIST:
         if ((authentication_mode is AuthenticationMode.PAT)
                 and (not http.jira_pat)
                 and (username and password)):
-            auth_operation = self.request_pat()
+            auth_operation = self.request_pat(username, password)
 
             if auth_operation.is_success is False:
                 # Raise exception if authentication request failed
@@ -48,8 +48,11 @@ class JIST:
                     )
                 )
 
-    def request_pat(self) -> JistOperation[PatResponse]:
-        token_operation = self.rest_api.get_pat()
+    def request_pat(
+            self,
+            username: str,
+            password: str) -> JistOperation[PatResponse]:
+        token_operation = self.rest_api.get_pat(username, password)
 
         if token_operation.is_success:
             http.set_pat(token_operation.content.raw_token)

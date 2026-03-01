@@ -10,7 +10,7 @@ def rest_get_config_content() -> None:
 
     # Retrieve Jira config data
     operation = jist.rest_api.get_config()
-    
+
     operation_result = (
         operation.content.model_dump_json(indent=2)
         if operation.is_success

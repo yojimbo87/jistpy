@@ -1,4 +1,3 @@
-from .jist_spec import AuthenticationMode
 from .pat_spec import (
     PatRequest,
     PatResponse
@@ -42,7 +41,6 @@ from .attribute_spec import (
 )
 
 __all__ = [
-    AuthenticationMode,
     PatRequest,
     PatResponse,
     JiraField,

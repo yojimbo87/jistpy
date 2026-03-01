@@ -25,8 +25,8 @@ from jist.specs import (
 )
 
 
-def get_pat() -> JistOperation[PatResponse]:
-    return pat_resource.get_pat()
+def get_pat(username: str, password: str) -> JistOperation[PatResponse]:
+    return pat_resource.get_pat(username, password)
 
 
 def get_config() -> JistOperation[ConfigResponse]:
