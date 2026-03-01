@@ -12,14 +12,14 @@ def client_load_structure_view_content() -> None:
     # Retrieve config (widget)
     config_operation = jist.load_config()
 
-    if config_operation.is_success is False:
+    if config_operation.failed:
         ui.code(config_operation.error.message).style('width: 800px')
         return
 
     # Retrieve structure data with default view attributes
     operation = jist.load_structure_view(575)
 
-    if operation.is_success is False:
+    if operation.failed:
         ui.code(operation.error.message).style('width: 800px')
         return
 

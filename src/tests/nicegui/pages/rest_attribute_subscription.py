@@ -78,7 +78,7 @@ async def handle_create_subscription():
 
     create_result = (
         create_operation.content.model_dump_json(indent=2)
-        if create_operation.is_success
+        if create_operation.succeeded
         else create_operation.error.message
     )
 
@@ -106,7 +106,7 @@ async def handle_poll_subscription():
 
     poll_result = (
         poll_operation.content.model_dump_json(indent=2)
-        if poll_operation.is_success
+        if poll_operation.succeeded
         else poll_operation.error.message
     )
 
@@ -127,7 +127,7 @@ async def handle_delete_subscription():
 
     delete_result = (
         delete_operation.content
-        if delete_operation.is_success
+        if delete_operation.succeeded
         else delete_operation.error.message
     )
 

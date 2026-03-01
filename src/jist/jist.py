@@ -39,7 +39,7 @@ class JIST:
                 and (username and password)):
             auth_operation = self.request_pat(username, password)
 
-            if auth_operation.is_success is False:
+            if auth_operation.failed:
                 # Raise exception if authentication request failed
                 raise Exception(
                     (
@@ -54,7 +54,7 @@ class JIST:
             password: str) -> JistOperation[PatResponse]:
         token_operation = self.rest_api.get_pat(username, password)
 
-        if token_operation.is_success:
+        if token_operation.succeeded:
             http.set_pat(token_operation.content.raw_token)
 
         return token_operation
@@ -62,7 +62,7 @@ class JIST:
     def load_config(self) -> JistOperation[ConfigResponse]:
         config_operation = self.rest_api.get_config()
 
-        if config_operation.is_success is False:
+        if config_operation.failed:
             return config_operation
 
         self.jira_config = JiraConfig(
@@ -83,7 +83,7 @@ class JIST:
         operation = JistOperation[Structure](status_code=0)
         view_operation = self.rest_api.get_default_view(structure_id)
 
-        if view_operation.is_success is False:
+        if view_operation.failed:
             operation.status_code = view_operation.status_code
             operation.error = view_operation.error
             return operation
@@ -92,7 +92,7 @@ class JIST:
         if (apply_config and self.jira_config is None):
             config_operation = self.load_config()
 
-            if config_operation.is_success is False:
+            if config_operation.failed:
                 operation.status_code = config_operation.status_code
                 operation.error = config_operation.error
                 return operation
@@ -177,7 +177,7 @@ class JIST:
             [v for k, v in attribute_specs.items()]
         )
 
-        if operation.is_success is False:
+        if operation.failed:
             return operation
 
         # Copy column and attribute specs from view to column data
@@ -197,7 +197,7 @@ class JIST:
         # Load forest data
         forest_operation = self.rest_api.get_forest(structure_id=structure_id)
 
-        if forest_operation.is_success is False:
+        if forest_operation.failed:
             operation.status_code = forest_operation.status_code
             operation.error = forest_operation.error
             return operation
@@ -214,7 +214,7 @@ class JIST:
             attribute_specs
         )
 
-        if value_operation.is_success is False:
+        if value_operation.failed:
             operation.status_code = value_operation.status_code
             operation.error = value_operation.error
             return operation

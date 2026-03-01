@@ -13,7 +13,7 @@ def rest_get_default_view_content() -> None:
 
     operation_result = (
         operation.content.model_dump_json(indent=2)
-        if operation.is_success
+        if operation.succeeded
         else operation.error.message
     )
 
