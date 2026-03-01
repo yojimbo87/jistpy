@@ -2,7 +2,7 @@ from nicegui import APIRouter
 import theme
 from pages import (
     home_content,
-    rest_get_token_content,
+    rest_get_pat_content,
     rest_get_config_content,
     rest_get_structures_content,
     rest_get_structure_content,
@@ -25,10 +25,10 @@ def home_page():
         home_content()
 
 
-@router.page('/rest-get-token')
-def get_token_page():
-    with theme.frame('REST API - Get token'):
-        rest_get_token_content()
+@router.page('/rest-get-pat')
+def get_pat_page():
+    with theme.frame('REST API - Get PAT'):
+        rest_get_pat_content()
 
 
 @router.page('/rest-get-config')

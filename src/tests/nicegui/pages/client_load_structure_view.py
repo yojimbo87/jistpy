@@ -7,7 +7,7 @@ from jist import JIST
 def client_load_structure_view_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
-    jist = JIST(secret.hostname, secret.username, secret.password)
+    jist = JIST(hostname=secret.hostname, pat=secret.pat)
 
     # Retrieve config (widget)
     config_operation = jist.load_config()

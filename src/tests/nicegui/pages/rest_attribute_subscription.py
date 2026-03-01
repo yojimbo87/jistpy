@@ -20,7 +20,7 @@ def rest_attribute_subscription_content() -> None:
     global subscription_data
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
-    jist = JIST(secret.hostname, secret.username, secret.password)
+    jist = JIST(hostname=secret.hostname, pat=secret.pat)
     values_update = True
     values_timeout = 500
     skip_loading = False

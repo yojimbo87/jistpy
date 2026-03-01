@@ -1,3 +1,4 @@
+from jist.specs import AuthenticationMode
 from requests import (
     get as rget,
     post as rpost,
@@ -5,32 +6,61 @@ from requests import (
     Response
 )
 
-host = ""
-credentials = ("", "")
-pat_token = ""
-pat_expiration_duration = 1
+is_authenticated = False
+jira_hostname: str = None
+jira_credentials: tuple[str, str] = None
+jira_pat: str = None
+jira_pat_expiration_duration = 90
+request_retry_count = 5
 headers = {
     "Accept": "application/json",
     "Content-Type": "application/json",
     "Cache-Control": "no-cache"
     # "X-Atlassian-Token": "no-check"
 }
-request_retry_count = 5
 
 
-def init(hostname: str, username: str, password: str) -> None:
-    global host
-    global credentials
+def init(
+        hostname: str,
+        username: str = None,
+        password: str = None,
+        pat: str = None,
+        pat_expiration_duration: int = 90,
+        authetntication_mode=AuthenticationMode.PAT) -> None:
+    global jira_hostname
+    global jira_credentials
+    global jira_pat
+    global jira_pat_expiration_duration
 
-    host = hostname
-    credentials = (username, password)
+    jira_hostname = hostname
+    jira_pat_expiration_duration = pat_expiration_duration
+
+    # Handle selected authentication mode
+    match authetntication_mode:
+        # https://developer.atlassian.com/server/jira/platform/personal-access-token/
+        case AuthenticationMode.PAT:
+            # If PAT token is supplied, it can be applied
+            # If PAT token is not supplied, JIST class will try to send
+            # authentication request
+            if pat:
+                set_pat(pat)
+        # https://developer.atlassian.com/server/jira/platform/basic-authentication/
+        case AuthenticationMode.BASIC:
+            # If username and password are supplied, credentials can be set
+            if username and password:
+                jira_credentials = (username, password)
+
+
+def set_pat(pat: str) -> None:
+    jira_pat = pat
+    headers["Authorization"] = f"Bearer {jira_pat}"
 
 
 def get(endpoint: str) -> Response:
     response = rget(
-        host + endpoint,
+        jira_hostname + endpoint,
         headers=headers,
-        auth=credentials
+        auth=jira_credentials
     )
 
     return response
@@ -38,16 +68,11 @@ def get(endpoint: str) -> Response:
 
 def post(
         endpoint: str,
-        data: str,
-        pat_token: str = None,
-        credentials: tuple[str, str] = None) -> Response:
-    if pat_token:
-        headers["Authorization"] = f"Bearer {pat_token}"
-
+        data: str) -> Response:
     response = rpost(
-        host + endpoint,
+        jira_hostname + endpoint,
         headers=headers,
-        auth=credentials if credentials else None,
+        auth=jira_credentials,
         data=data
     )
 
@@ -56,9 +81,9 @@ def post(
 
 def delete(endpoint: str) -> Response:
     response = rdelete(
-        host + endpoint,
+        jira_hostname + endpoint,
         headers=headers,
-        auth=credentials
+        auth=jira_credentials
     )
 
     return response

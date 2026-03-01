@@ -7,7 +7,7 @@ from jist import JIST, ColumnKey
 def client_get_columns_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
-    jist = JIST(secret.hostname, secret.username, secret.password)
+    jist = JIST(hostname=secret.hostname, pat=secret.pat)
 
     # Retrieve structure data
     operation = jist.load_structure_view(575)

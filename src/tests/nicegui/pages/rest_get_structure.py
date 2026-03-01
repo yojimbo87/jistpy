@@ -6,7 +6,7 @@ from jist import JIST
 def rest_get_structure_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
-    jist = JIST(secret.hostname, secret.username, secret.password)
+    jist = JIST(hostname=secret.hostname, pat=secret.pat)
 
     # Retrieve structure data
     operation = jist.rest_api.get_structure(600)

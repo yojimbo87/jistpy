@@ -1,6 +1,7 @@
 from .structure import StructureColumn, Structure
 import jist.utils.http_service as http
 from jist.specs import (
+    AuthenticationMode,
     PatResponse,
     AttributeId,
     AttributeValueFormat,
@@ -16,25 +17,42 @@ from jist.jist_operation import JistOperation
 
 
 class JIST:
-    def __init__(self, host: str, username: str, password: str):
-        # TODO: get rid of username and password
-        http.init(host, username, password)
-
+    def __init__(
+            self,
+            hostname: str,
+            username: str = None,
+            password: str = None,
+            pat: str = None,
+            authentication_mode=AuthenticationMode.PAT):
+        # Initialized HTTP service to setup request data
+        http.init(hostname, username, password, pat, authentication_mode)
+        # Setup public fields
         self.rest_api: rest_api = rest_api
         self.jira_config: JiraConfig = None
 
-    def authenticate(
-            self,
-            username: str,
-            password: str) -> JistOperation[PatResponse]:
-        token_operation = self.rest_api.get_token(
-            username,
-            password,
-            http.pat_expiration_duration
-        )
+        # Proceed with PAT authetication request when:
+        # - PAT auth mode is selected
+        # - PAT token is not supplied, thus it must be requested
+        # - username and password are supplied to retrieve valid PAT token
+        if ((authentication_mode is AuthenticationMode.PAT)
+                and (not http.jira_pat)
+                and (username and password)):
+            auth_operation = self.request_pat()
+
+            if auth_operation.is_success is False:
+                # Raise exception if authentication request failed
+                raise Exception(
+                    (
+                        f"PAT authentication failed:"
+                        f" {auth_operation.error.message}"
+                    )
+                )
+
+    def request_pat(self) -> JistOperation[PatResponse]:
+        token_operation = self.rest_api.get_pat()
 
         if token_operation.is_success:
-            http.pat_token = token_operation.content.raw_token
+            http.set_pat(token_operation.content.raw_token)
 
         return token_operation
 

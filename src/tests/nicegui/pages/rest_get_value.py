@@ -7,7 +7,7 @@ from jist.specs import AttributeSpec, AttributeId, AttributeValueFormat
 def rest_get_value_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
-    jist = JIST(secret.hostname, secret.username, secret.password)
+    jist = JIST(hostname=secret.hostname, pat=secret.pat)
 
     # Retrieve value data
     operation = jist.rest_api.get_value(

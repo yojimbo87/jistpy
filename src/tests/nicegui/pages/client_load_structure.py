@@ -7,7 +7,7 @@ from jist import JIST, AttributeId, AttributeValueFormat, AttributeSpec
 def client_load_structure_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
-    jist = JIST(secret.hostname, secret.username, secret.password)
+    jist = JIST(hostname=secret.hostname, pat=secret.pat)
 
     attribute_specs = [
         AttributeSpec(

@@ -25,15 +25,8 @@ from jist.specs import (
 )
 
 
-def get_token(
-        username: str,
-        password: str,
-        token_expiration_duration: int) -> JistOperation[PatResponse]:
-    return pat_resource.get_token(
-        username,
-        password,
-        token_expiration_duration
-    )
+def get_pat() -> JistOperation[PatResponse]:
+    return pat_resource.get_pat()
 
 
 def get_config() -> JistOperation[ConfigResponse]:

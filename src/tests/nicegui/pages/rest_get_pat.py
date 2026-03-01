@@ -3,13 +3,17 @@ from jist.utils import Secret
 from jist import JIST
 
 
-def rest_get_token_content() -> None:
+def rest_get_pat_content() -> None:
     # Setup client
     secret = Secret("../../secret.ini", "Credentials2")
-    jist = JIST(secret.hostname, secret.username, secret.password)
+    jist = JIST(
+        hostname=secret.hostname,
+        username=secret.username,
+        password=secret.password
+    )
 
     # Authenticate user
-    operation = jist.authenticate(secret.username, secret.password)
+    operation = jist.request_pat(secret.username, secret.password)
 
     operation_result = (
         operation.content.model_dump_json(indent=2)

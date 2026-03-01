@@ -18,3 +18,4 @@ class Secret:
         self.hostname = config[credential_section]["hostname"]
         self.username = config[credential_section]["username"]
         self.password = config[credential_section]["password"]
+        self.pat = config[credential_section]["pat"]
