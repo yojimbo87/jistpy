@@ -24,7 +24,10 @@ def get_pat(username: str, password: str) -> JistOperation[PatResponse]:
     http.jira_credentials = None
     # Process request result
     operation = JistOperation[PatResponse](response.status_code)
-    response_json_data = http.to_json(response)
+    response_json_data: any = None
+
+    if 'application/json' in response.headers.get('Content-Type').lower():
+        response_json_data = http.to_json(response)
 
     match response.status_code:
         case 201:
@@ -32,8 +35,13 @@ def get_pat(username: str, password: str) -> JistOperation[PatResponse]:
                 response_json_data
             )
         case _:
-            operation.error = TypeAdapter(JistError).validate_python(
-                response_json_data
-            )
+            if response_json_data:
+                operation.error = JistError(
+                    message=repr(response_json_data)
+                )
+            else:
+                operation.error = JistError(
+                    message=response.text
+                )
 
     return operation

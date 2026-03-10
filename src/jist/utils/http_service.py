@@ -1,4 +1,4 @@
-from ..authentication_mode import AuthenticationMode
+from jist.authentication_mode import AuthenticationMode
 from requests import (
     get as rget,
     post as rpost,

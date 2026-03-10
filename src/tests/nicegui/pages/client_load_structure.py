@@ -25,7 +25,10 @@ def client_load_structure_content() -> None:
     ]
 
     # Retrieve structure data with specified attributes
-    operation = jist.load_structure(613, attribute_specs)
+    operation = (
+        jist.structure(613)
+            .load(attribute_specs)
+    )
 
     if operation.failed:
         ui.code(operation.error.message).style('width: 800px')

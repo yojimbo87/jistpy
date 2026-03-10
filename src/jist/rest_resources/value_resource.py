@@ -27,6 +27,14 @@ def get_value(request: ValueRequest) -> JistOperation[ValueResponse]:
                         response_json_data
                     )
                     break
+                elif i == (http.request_retry_count - 1):
+                    operation.content = None
+                    operation.error = JistError(
+                        message=(
+                            f"Timedout after {http.request_retry_count}"
+                            f" requests with data: {response.text}"
+                        )
+                    )
             case _:
                 operation.error = TypeAdapter(JistError).validate_python(
                     response_json_data

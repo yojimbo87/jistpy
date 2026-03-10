@@ -17,7 +17,7 @@ def rest_get_pat_content() -> None:
         )
         message = "PAT authentication was successful"
     except Exception as exception:
-        message = exception.args
+        message = repr(exception)
 
     # Setup web interface
     ui.code(message).style('width: 800px')

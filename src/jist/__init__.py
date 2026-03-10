@@ -1,9 +1,10 @@
-from .authentication_mode import AuthenticationMode
-from .jist import JIST
-from .jist_operation import JistError, JistOperation
-from .structure import StructureColumn, Structure
-from .rest_resources import rest_api
-from .specs import (
+from jist.authentication_mode import AuthenticationMode
+from jist.jist import JIST
+from jist.jist_operation import JistError, JistOperation
+import jist.jist_cache as jist_cache
+from jist.structure import Column, Structure
+from jist.rest_resources import rest_api
+from jist.specs import (
     StructureResponse,
     ForestSpec,
     ForestResponse,
@@ -21,7 +22,8 @@ __all__ = [
     JIST,
     JistError,
     JistOperation,
-    StructureColumn,
+    jist_cache,
+    Column,
     Structure,
     rest_api,
     StructureResponse,

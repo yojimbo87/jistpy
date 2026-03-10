@@ -9,15 +9,11 @@ def client_load_structure_view_content() -> None:
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(hostname=secret.hostname, pat=secret.pat)
 
-    # Retrieve config (widget)
-    config_operation = jist.load_config()
-
-    if config_operation.failed:
-        ui.code(config_operation.error.message).style('width: 800px')
-        return
-
     # Retrieve structure data with default view attributes
-    operation = jist.load_structure_view(575)
+    operation = (
+        jist.structure(575)
+            .load_view()  # Loads default view if view ID is not given
+    )
 
     if operation.failed:
         ui.code(operation.error.message).style('width: 800px')

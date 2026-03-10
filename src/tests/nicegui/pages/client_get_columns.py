@@ -10,7 +10,10 @@ def client_get_columns_content() -> None:
     jist = JIST(hostname=secret.hostname, pat=secret.pat)
 
     # Retrieve structure data
-    operation = jist.load_structure_view(575)
+    operation = (
+        jist.structure(575)
+            .load_view()  # Loads default view if view ID is not given
+    )
 
     if operation.failed:
         ui.code(operation.error.message).style('width: 800px')
