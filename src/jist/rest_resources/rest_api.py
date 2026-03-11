@@ -48,14 +48,14 @@ def get_forest(structure_id: int) -> JistOperation[ForestResponse]:
 def get_value(
     structure_id: int,
     rows: list[int],
-    attributes: list[AttributeSpec]
+    attribute_specs: list[AttributeSpec]
 ) -> JistOperation[ValueResponse]:
     request = ValueRequest(
         requests=[
             ValueRequestItem(
                 forestSpec=ForestSpec(structure_id=structure_id),
                 rows=rows,
-                attributes=attributes
+                attributes=attribute_specs
             )
         ]
     )

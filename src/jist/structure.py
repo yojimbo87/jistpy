@@ -53,7 +53,7 @@ class Hierarchy:
 class Structure:
     def __init__(self, id: int):
         self.id: int = id
-        self.attributes: list[AttributeSpec] = []
+        self.attribute_specs: list[AttributeSpec] = []
         self.apply_config = True
         self.row_ids: list[int] = None
         self.include_row_metadata = True
@@ -82,13 +82,14 @@ class Structure:
 
         return self
 
-    def with_attribute(self, attribute: AttributeSpec) -> Self:
-        self.attributes.append(attribute)
+    def with_attribute_spec(self, attribute_spec: AttributeSpec) -> Self:
+        self.attribute_specs.append(attribute_spec)
 
         return self
-    
-    def with_attributes(self, attributes: list[AttributeSpec]) -> Self:
-        self.attributes = attributes
+
+    def with_attribute_specs(
+            self, attribute_specs: list[AttributeSpec]) -> Self:
+        self.attribute_specs = attribute_specs
 
         return self
 
@@ -118,7 +119,7 @@ class Structure:
 
             jist_cache.load_config(config_operation.content)
 
-        attributes: dict[str, AttributeSpec] = {}
+        attribute_specs: dict[str, AttributeSpec] = {}
         column_specs: dict[str, ColumnSpec] = {}
 
         # Create list of attribute specs for retrieval of structure data
@@ -185,7 +186,7 @@ class Structure:
 
             column_id = str(i)
             # Add attribute spec which will be sent in the request
-            attributes[column_id] = attribute_spec
+            attribute_specs[column_id] = attribute_spec
             # Create and add new column spec
             column_specs[column_id] = ColumnSpec(
                 csid=column_spec.csid,
@@ -195,7 +196,7 @@ class Structure:
             )
 
         # Pass attributes to be loaded into structure object
-        self.with_attributes([v for k, v in attributes.items()])
+        self.with_attribute_specs([v for k, v in attribute_specs.items()])
         # Retrieve structure data
         operation = self.load()
 
@@ -206,7 +207,7 @@ class Structure:
         for column_id, column in operation.content.columns.items():
             if column_id in column_specs:
                 column.column_spec = column_specs[column_id]
-                column.attribute_spec = attributes[column_id]
+                column.attribute_spec = attribute_specs[column_id]
 
         return operation
 
@@ -258,7 +259,7 @@ class Structure:
         value_operation = rest_api.get_value(
             self.id,
             requested_row_ids,
-            self.attributes
+            self.attribute_specs
         )
 
         if value_operation.failed:

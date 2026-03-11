@@ -27,7 +27,7 @@ def client_load_structure_content() -> None:
     # Retrieve structure data with specified attributes
     operation = (
         jist.structure(613)
-            .with_attributes(attributes)
+            .with_attribute_specs(attributes)
             .load()
     )
 
