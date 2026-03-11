@@ -9,7 +9,7 @@ def client_load_structure_content() -> None:
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(hostname=secret.hostname, pat=secret.pat)
 
-    attribute_specs = [
+    attributes = [
         AttributeSpec(
             id=AttributeId.SUMMARY,
             format=AttributeValueFormat.TEXT
@@ -27,7 +27,8 @@ def client_load_structure_content() -> None:
     # Retrieve structure data with specified attributes
     operation = (
         jist.structure(613)
-            .load(attribute_specs)
+            .with_attributes(attributes)
+            .load()
     )
 
     if operation.failed:

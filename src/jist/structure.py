@@ -53,6 +53,7 @@ class Hierarchy:
 class Structure:
     def __init__(self, id: int):
         self.id: int = id
+        self.attributes: list[AttributeSpec] = []
         self.apply_config = True
         self.row_ids: list[int] = None
         self.include_row_metadata = True
@@ -78,6 +79,16 @@ class Structure:
 
         if not cache_row_metadata:
             self.cached_forest_response = None
+
+        return self
+
+    def with_attribute(self, attribute: AttributeSpec) -> Self:
+        self.attributes.append(attribute)
+
+        return self
+    
+    def with_attributes(self, attributes: list[AttributeSpec]) -> Self:
+        self.attributes = attributes
 
         return self
 
@@ -107,7 +118,7 @@ class Structure:
 
             jist_cache.load_config(config_operation.content)
 
-        attribute_specs: dict[str, AttributeSpec] = {}
+        attributes: dict[str, AttributeSpec] = {}
         column_specs: dict[str, ColumnSpec] = {}
 
         # Create list of attribute specs for retrieval of structure data
@@ -174,7 +185,7 @@ class Structure:
 
             column_id = str(i)
             # Add attribute spec which will be sent in the request
-            attribute_specs[column_id] = attribute_spec
+            attributes[column_id] = attribute_spec
             # Create and add new column spec
             column_specs[column_id] = ColumnSpec(
                 csid=column_spec.csid,
@@ -183,10 +194,10 @@ class Structure:
                 params=column_spec.params
             )
 
+        # Pass attributes to be loaded into structure object
+        self.with_attributes([v for k, v in attributes.items()])
         # Retrieve structure data
-        operation = self.load(
-            [v for k, v in attribute_specs.items()]
-        )
+        operation = self.load()
 
         if operation.failed:
             return operation
@@ -195,14 +206,12 @@ class Structure:
         for column_id, column in operation.content.columns.items():
             if column_id in column_specs:
                 column.column_spec = column_specs[column_id]
-                column.attribute_spec = attribute_specs[column_id]
+                column.attribute_spec = attributes[column_id]
 
         return operation
 
-    # Loads structure data for specified attributes
-    def load(
-            self,
-            attribute_specs: list[AttributeSpec]) -> JistOperation[Hierarchy]:
+    # Loads structure data
+    def load(self) -> JistOperation[Hierarchy]:
         operation = JistOperation[Hierarchy](status_code=0)
         requested_row_ids: list[int] = None
         forest_response: ForestResponse = None
@@ -249,7 +258,7 @@ class Structure:
         value_operation = rest_api.get_value(
             self.id,
             requested_row_ids,
-            attribute_specs
+            self.attributes
         )
 
         if value_operation.failed:
