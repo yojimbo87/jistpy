@@ -12,6 +12,8 @@ def client_load_structure_view_content() -> None:
     # Retrieve structure data with default view attributes
     operation = (
         jist.structure(575)
+            .with_rows([795740, 77683, 77735])
+            .with_row_metadata(False)
             .load_view()  # Loads default view if view ID is not given
     )
 

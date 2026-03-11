@@ -6,6 +6,7 @@ from jist.specs import (
     ColumnKey,
     ColumnSpec,
     ConfigResponse,
+    ForestResponse,
     ItemType,
     ViewResponse
 )
@@ -54,6 +55,9 @@ class Structure:
         self.id: int = id
         self.apply_config = True
         self.row_ids: list[int] = None
+        self.include_row_metadata = True
+        self.cache_row_metadata = True
+        self.cached_forest_response: ForestResponse = None
 
     def with_config(self, apply_config=True) -> Self:
         self.apply_config = apply_config
@@ -62,6 +66,18 @@ class Structure:
 
     def with_rows(self, row_ids: list[int]) -> Self:
         self.row_ids = row_ids
+
+        return self
+
+    def with_row_metadata(
+            self,
+            include_row_metadata=True,
+            cache_row_metadata=True) -> Self:
+        self.include_row_metadata = include_row_metadata
+        self.cache_row_metadata = cache_row_metadata
+
+        if not cache_row_metadata:
+            self.cached_forest_response = None
 
         return self
 
@@ -96,9 +112,9 @@ class Structure:
 
         # Create list of attribute specs for retrieval of structure data
         for i, column_spec in enumerate(view_operation.content.spec.columns):
-            # By default attribute ID is unknown before parsing
+            # Default attribute ID is unknown before parsing
             attribute_id = AttributeId.UNKNOWN
-            # TODO: for now default format is set to retrieve text
+            # Default attribute format is set to retrieve text
             attribute_format = AttributeValueFormat.TEXT
             attribute_params = {}
             # Column name can be different than attribute ID
@@ -169,8 +185,7 @@ class Structure:
 
         # Retrieve structure data
         operation = self.load(
-            [v for k, v in attribute_specs.items()],
-            self.row_ids
+            [v for k, v in attribute_specs.items()]
         )
 
         if operation.failed:
@@ -187,27 +202,53 @@ class Structure:
     # Loads structure data for specified attributes
     def load(
             self,
-            attribute_specs: list[AttributeSpec],
-            row_ids: list[int] = None) -> JistOperation[Hierarchy]:
+            attribute_specs: list[AttributeSpec]) -> JistOperation[Hierarchy]:
         operation = JistOperation[Hierarchy](status_code=0)
-        # Load forest data
-        forest_operation = rest_api.get_forest(structure_id=self.id)
+        requested_row_ids: list[int] = None
+        forest_response: ForestResponse = None
 
-        if forest_operation.failed:
-            operation.status_code = forest_operation.status_code
-            operation.error = forest_operation.error
-            return operation
+        # Request forest row metadata in following cases:
+        # - if there are requested row IDs and row metadata are not cached yet
+        # - or if row metadata should be included and they are not cached yet
+        if (
+            (not self.row_ids and (self.cached_forest_response is None)) or
+            (
+                self.include_row_metadata and
+                (self.cached_forest_response is None)
+            )
+        ):
+            # Load all forest row metadata - it doesn't seem to be possible
+            # to retrieve only row metadata for selected range of row IDs
+            forest_operation = rest_api.get_forest(structure_id=self.id)
 
-        # Get row IDs from forest components if it's not present in parameters
-        if row_ids is None:
-            row_ids = [
-                component.row_id
-                for component in forest_operation.content.components
+            if forest_operation.failed:
+                operation.status_code = forest_operation.status_code
+                operation.error = forest_operation.error
+                return operation
+
+            forest_response = forest_operation.content
+
+            if self.cache_row_metadata:
+                self.cached_forest_response = forest_response
+        else:
+            # Load all forest metadata from cache
+            forest_response = self.cached_forest_response
+
+        # Use row IDs to be requested if they are present in structure object
+        # setup
+        if self.row_ids:
+            requested_row_ids = self.row_ids
+        # Otherwise get list of row IDs to be requested from forest response
+        else:
+            requested_row_ids = [
+                row_id
+                for row_id in list(forest_response.components.keys())
             ]
+
         # Load forest values
         value_operation = rest_api.get_value(
-            forest_operation.content.spec.structure_id,
-            row_ids,
+            self.id,
+            requested_row_ids,
             attribute_specs
         )
 
@@ -228,30 +269,33 @@ class Structure:
             row_item_ids: list[str] = []
             row_issue_ids: list[int] = []
 
-            # Load row definition data into dedicated data columns by
-            # iterating through individual row IDs
-            for i_row, row_id in enumerate(value_response_item.rows):
-                # Get forest component data based on row ID index
-                forest_component = forest_operation.content.components[i_row]
-                # Determine item type
-                item_type = (
-                    ItemType.ISSUE
-                    if forest_component.issue_id
-                    else ItemType.MISSING
-                )
-                item_type_field = str(forest_component.item_type)
-
-                if (item_type_field in forest_operation.content.item_types):
-                    item_type = ItemType(
-                        forest_operation.content.item_types[item_type_field]
-                    )
-
-                # Store individual row metadata into dedicated data columns
+            for row_id in value_response_item.rows:
                 row_ids.append(row_id)
-                row_depths.append(forest_component.row_depth)
-                row_item_types.append(item_type.name)
-                row_item_ids.append(forest_component.item_id)
-                row_issue_ids.append(forest_component.issue_id)
+
+                # Load row metadata definitions if requested
+                if self.include_row_metadata:
+                    # Get forest component data based on row ID index
+                    forest_component = forest_response.components[row_id]
+                    # Determine item type
+                    item_type = (
+                        ItemType.ISSUE
+                        if forest_component.issue_id
+                        else ItemType.MISSING
+                    )
+                    item_type_field = str(forest_component.item_type)
+
+                    if item_type_field in forest_operation.content.item_types:
+                        item_type = ItemType(
+                            forest_operation.content.item_types[
+                                item_type_field
+                            ]
+                        )
+
+                    # Store individual row metadata into dedicated data columns
+                    row_depths.append(forest_component.row_depth)
+                    row_item_types.append(item_type.name)
+                    row_item_ids.append(forest_component.item_id)
+                    row_issue_ids.append(forest_component.issue_id)
 
             hierarchy.columns[ColumnKey.ROW_ID] = Column(
                 id=ColumnKey.ROW_ID,
@@ -265,53 +309,55 @@ class Structure:
                 values=row_ids
             )
 
-            hierarchy.columns[ColumnKey.ROW_DEPTH] = Column(
-                id=ColumnKey.ROW_DEPTH,
-                columns_spec=ColumnSpec(
-                    key=ColumnKey.ROW_DEPTH,
-                    name=ColumnKey.ROW_DEPTH,
-                    csid=ColumnKey.ROW_DEPTH,
-                    params={}
-                ),
-                attribute_spec=None,
-                values=row_depths
-            )
+            # Append row metadata definitions as separate columns if requested
+            if self.include_row_metadata:
+                hierarchy.columns[ColumnKey.ROW_DEPTH] = Column(
+                    id=ColumnKey.ROW_DEPTH,
+                    columns_spec=ColumnSpec(
+                        key=ColumnKey.ROW_DEPTH,
+                        name=ColumnKey.ROW_DEPTH,
+                        csid=ColumnKey.ROW_DEPTH,
+                        params={}
+                    ),
+                    attribute_spec=None,
+                    values=row_depths
+                )
 
-            hierarchy.columns[ColumnKey.ROW_ITEM_TYPE] = Column(
-                id=ColumnKey.ROW_ITEM_TYPE,
-                columns_spec=ColumnSpec(
-                    key=ColumnKey.ROW_ITEM_TYPE,
-                    name=ColumnKey.ROW_ITEM_TYPE,
-                    csid=ColumnKey.ROW_ITEM_TYPE,
-                    params={}
-                ),
-                attribute_spec=None,
-                values=row_item_types
-            )
+                hierarchy.columns[ColumnKey.ROW_ITEM_TYPE] = Column(
+                    id=ColumnKey.ROW_ITEM_TYPE,
+                    columns_spec=ColumnSpec(
+                        key=ColumnKey.ROW_ITEM_TYPE,
+                        name=ColumnKey.ROW_ITEM_TYPE,
+                        csid=ColumnKey.ROW_ITEM_TYPE,
+                        params={}
+                    ),
+                    attribute_spec=None,
+                    values=row_item_types
+                )
 
-            hierarchy.columns[ColumnKey.ROW_ITEM_ID] = Column(
-                id=ColumnKey.ROW_ITEM_ID,
-                columns_spec=ColumnSpec(
-                    key=ColumnKey.ROW_ITEM_ID,
-                    name=ColumnKey.ROW_ITEM_ID,
-                    csid=ColumnKey.ROW_ITEM_ID,
-                    params={}
-                ),
-                attribute_spec=None,
-                values=row_item_ids
-            )
+                hierarchy.columns[ColumnKey.ROW_ITEM_ID] = Column(
+                    id=ColumnKey.ROW_ITEM_ID,
+                    columns_spec=ColumnSpec(
+                        key=ColumnKey.ROW_ITEM_ID,
+                        name=ColumnKey.ROW_ITEM_ID,
+                        csid=ColumnKey.ROW_ITEM_ID,
+                        params={}
+                    ),
+                    attribute_spec=None,
+                    values=row_item_ids
+                )
 
-            hierarchy.columns[ColumnKey.ROW_ISSUE_ID] = Column(
-                id=ColumnKey.ROW_ISSUE_ID,
-                columns_spec=ColumnSpec(
-                    key=ColumnKey.ROW_ISSUE_ID,
-                    name=ColumnKey.ROW_ISSUE_ID,
-                    csid=ColumnKey.ROW_ISSUE_ID,
-                    params={}
-                ),
-                attribute_spec=None,
-                values=row_issue_ids
-            )
+                hierarchy.columns[ColumnKey.ROW_ISSUE_ID] = Column(
+                    id=ColumnKey.ROW_ISSUE_ID,
+                    columns_spec=ColumnSpec(
+                        key=ColumnKey.ROW_ISSUE_ID,
+                        name=ColumnKey.ROW_ISSUE_ID,
+                        csid=ColumnKey.ROW_ISSUE_ID,
+                        params={}
+                    ),
+                    attribute_spec=None,
+                    values=row_issue_ids
+                )
 
             # Iterate through attributes from response
             for i_data_item, data_item in enumerate(value_response_item.data):

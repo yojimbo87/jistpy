@@ -17,7 +17,7 @@ def get_forest(structure_id: int) -> JistOperation[ForestResponse]:
                 response_json_data
             )
             # Formula string needs to be parsed into components
-            operation.content.components = forest_parser.parse_formula(
+            operation.content.components = forest_parser.parse_formula2(
                 operation.content.formula
             )
         case _:

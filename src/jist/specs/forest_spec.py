@@ -72,6 +72,6 @@ class ForestComponent(BaseModel):
 class ForestResponse(BaseModel):
     spec: ForestSpec
     formula: str
-    components: list[ForestComponent] = Field(default=None)
+    components: dict[int, ForestComponent] = Field(default=None)
     item_types: dict = Field(alias="itemTypes")
     version: Version
