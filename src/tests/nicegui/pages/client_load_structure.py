@@ -1,7 +1,7 @@
 import polars as pl
 from nicegui import ui
 from jist.utils import Secret
-from jist import JIST, AttributeId, AttributeValueFormat, AttributeSpec
+from jist import JIST, AttributeId
 
 
 def client_load_structure_content() -> None:
@@ -9,25 +9,12 @@ def client_load_structure_content() -> None:
     secret = Secret("../../secret.ini", "Credentials2")
     jist = JIST(hostname=secret.hostname, pat=secret.pat)
 
-    attributes = [
-        AttributeSpec(
-            id=AttributeId.SUMMARY,
-            format=AttributeValueFormat.TEXT
-        ),
-        AttributeSpec(
-            id=AttributeId.STATUS,
-            format=AttributeValueFormat.TEXT
-        ),
-        AttributeSpec(
-            id=AttributeId.LABELS,
-            format=AttributeValueFormat.TEXT
-        )
-    ]
-
     # Retrieve structure data with specified attributes
     operation = (
         jist.structure(613)
-            .with_attribute_specs(attributes)
+            .with_attribute(AttributeId.SUMMARY)
+            .with_attribute(AttributeId.STATUS)
+            .with_attribute(AttributeId.LABELS)
             .load()
     )
 

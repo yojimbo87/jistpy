@@ -82,6 +82,20 @@ class Structure:
 
         return self
 
+    # TODO: implement simple attribute addition
+    def with_attribute(
+            self,
+            id: AttributeId,
+            format: str = AttributeValueFormat.TEXT) -> Self:
+        self.attribute_specs.append(
+            AttributeSpec(
+                id=id,
+                format=format
+            )
+        )
+
+        return self
+
     def with_attribute_spec(self, attribute_spec: AttributeSpec) -> Self:
         self.attribute_specs.append(attribute_spec)
 

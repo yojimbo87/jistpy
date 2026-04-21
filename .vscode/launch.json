@@ -8,8 +8,8 @@
             "name": "Python Debugger: Nicegui tests",
             "type": "debugpy",
             "request": "launch",
-            "program": "./src/tests/nicegui/main.py",
-            //"program": "./src/tests/console/main.py",
+            //"program": "./src/tests/nicegui/main.py",
+            "program": "./src/tests/console/main.py",
             "console": "integratedTerminal",
             "env": {
                 "PYTHONPATH": "${workspaceFolder}/src"
