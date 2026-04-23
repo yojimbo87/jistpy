@@ -2,7 +2,22 @@
 
 Client for accessing Jira [Structure REST API](https://help.tempo.io/structure-dc/latest/structure-rest-api-reference) from python.
 
+## Basic concepts
+
+Client API is exposed through `JIST` instance. Once successfully authenticated, data can be loaded using the following:
+
+- `rest_api` variable - exposes module which contains functions that call low-level Jira Structure REST API endpoints
+- `structure(structure_id)` method - creates `Structure` instance with high-level fluent API to setup optional parameters, that are used to load data within structure hierarchy.
+
+Each retrieval of data or API call is wrapped in `JistOperation` object, which provide information about the operation outcome:
+
+- In case of success, retrieved data are present in `content` field.
+- In case of failure, `JistError` object in `error` field contains data about reason behind the failure.
+- `succeeded` and `failed` properties can be used to check for content or errors presence of the operation.
+
 ## Usage examples
+
+### Retrieve structure with specific attributes
 
 ```python
 from polars as pl
@@ -32,7 +47,7 @@ data = {}
 for column_id, column in operation.content.columns.items():
     data[column.column_spec.name] = column.values
 
-# Create polars DataFrame
+# Using polars to demonstrate loading data into DataFrame
 df = pl.DataFrame(data=data)
 
 # Print DataFrame into console
@@ -151,6 +166,77 @@ id: str
 columns_spec: ColumnSpec
 attribute_spec: AttributeSpec
 values: list[any]
+```
+
+### ColumnKey enum
+
+```python
+ROW_ID = "__row_id"  # Library internal
+ROW_DEPTH = "__row_depth"  # Library internal
+ROW_ITEM_TYPE = "__row_item_type"  # Library internal
+ROW_ITEM_ID = "__row_item_id"  # Library internal
+ROW_ISSUE_ID = "__row_issue_id"  # Library internal
+KEY = "key"
+SUMMARY = "Summary"
+ACTIONS = "actions"
+FIELD = "field"
+FORMULA = "formula"
+HANDLE = "handle"
+MAIN = "main"
+UNKNOWN = "unknown"  # Placeholder value for undetermined column key
+```
+
+### AttributeId enum
+
+```python
+AFFECTS_VERSIONS = "versions"
+ASSIGNEE = "assignee"
+COMPONENTS = "components"
+CREATED = "created"
+CREATOR = "creator"
+CUSTOMFIELD = "customfield"
+DESCRIPTION = "description"
+DISPLAYABLE = "displayable"
+DONE = "done"
+DUEDATE = "duedate"
+EDITABLE = "editable"
+FIX_VERSIONS = "fixVersions"
+FORMULA = "expr"
+ICON = "icon"
+ISSUETYPE = "issuetype"
+ITEM = "item"
+KEY = "key"
+LABELS = "labels"
+PRIORITY = "priority"
+PROGRESS = "progress"
+PROJECT = "project"
+REPORTER = "reporter"
+STATUS = "status"
+SUM = "sum"
+SUMMARY = "summary"
+TYPE = "type"
+UNKNOWN = "unknown"  # Determines ID which is not implemented
+UPDATED = "updated"
+URL = "url"
+USER = "user"
+VOTES = "votes"
+WATCHES = "watches"
+```
+
+### AttributeValueFormat enum
+
+```python
+ANY = "any"
+BOOLEAN = "boolean"
+DURATION = "duration"
+HTML = "html"
+ID = "id"
+JSON_ARRAY = "json_array"
+JSON_OBJECT = "json"
+NUMBER = "number"
+ORDER = "order"
+TEXT = "text"
+TIME = "time"
 ```
 
 ## REST API endpoints implementation

@@ -22,7 +22,7 @@ class JistOperation(Generic[ContentT]):
         self.error: JistError = None
 
     @property
-    def succeeded(self):
+    def succeeded(self) -> bool:
         return (
             True
             if (self.error is None) and (self.content is not None)
@@ -30,5 +30,5 @@ class JistOperation(Generic[ContentT]):
         )
 
     @property
-    def failed(self):
+    def failed(self) -> bool:
         return (self.succeeded is False)

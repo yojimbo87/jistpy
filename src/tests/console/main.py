@@ -28,7 +28,7 @@ def main():
     for column_id, column in operation.content.columns.items():
         data[column.column_spec.name] = column.values
 
-    # Create polars DataFrame
+    # Using polars to demonstrate loading data into DataFrame
     df = pl.DataFrame(data=data)
 
     # Print DataFrame into console
